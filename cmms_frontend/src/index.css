@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: rgb(230, 230, 230);
+  /* color: rgb(211, 211, 211); */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+#sign-out-hover:hover {
+  color: whitesmoke;
+  background-color: #dc3545;
+}
+
+/* Hover for profile buttons from gray to blue  */
+.dropdown-menu a:hover {
+  color: whitesmoke;
+  background-color: #007bff;
+}
+
+/* Centering navbar items when collapse */
+@media (max-width: 768px) {
+  .navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+  }
+
+  .navbar .navbar-collapse {
+    text-align: center;
+  }
+}
+
+/* sidebar */
+.sidebar-category {
+  color: lightgray;
+}
+
+.sidebar-category:hover {
+  color: rgb(160, 160, 160);
+}
+
+.sidebar-subcategory {
+  color: rgb(160, 160, 160);
+}
+
+.sidebar > ul > li > a:hover {
+  color: lightgray;
+}
