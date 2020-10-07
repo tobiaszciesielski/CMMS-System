@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
-// import authService from "../services/authService.js";
 import { useAuth } from "../context/AuthProvider";
 import { Input } from "./common/Input";
 
@@ -59,7 +58,7 @@ export const SubmitForm = () => {
           width="100%"
           alt="Gestamp Logo"
         />
-        <h2 className=" mb-4 mt-2 text-muted">CMMS System</h2>
+        <h2 className="mb-4 mt-2 text-muted">CMMS System</h2>
         {renderInput("login", "Login", "text", true)}
         {renderInput("password", "Password", "password")}
         {loginError && <div className="alert alert-danger">{loginError}</div>}

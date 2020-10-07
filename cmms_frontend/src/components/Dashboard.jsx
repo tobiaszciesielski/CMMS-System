@@ -30,7 +30,7 @@ const Dashboard = () => {
       <Card className="mt-3 text-center">
         <div className="row">
           <div className="col-lg h2">
-            <h2 className="text-primary ">Module selection</h2>
+            <h2 className="text-primary">Module selection</h2>
             <h5>Choose module you want to work with.</h5>
           </div>
         </div>

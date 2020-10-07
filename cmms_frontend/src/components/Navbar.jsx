@@ -16,6 +16,14 @@ const Navbar = () => {
     return <FontAwesomeIcon className="ml-2" icon={userIcon} />;
   };
 
+  const closingToggler = () => {
+    const toggler = document.getElementById("navbar-toggler");
+    toggler.classList.toggle("collapsed");
+    toggler.setAttribute("aria-expanded", "false");
+    const menu = document.getElementById("main-menu");
+    menu.classList.toggle("show");
+  };
+
   return (
     <Nav className="navbar navbar-expand-md navbar-light fixed-top bg-light">
       <span className="navbar-brand mr-0">
@@ -30,6 +38,7 @@ const Navbar = () => {
       </span>
 
       <button
+        id="navbar-toggler"
         className="navbar-toggler ml-auto"
         type="button"
         data-toggle="collapse"
@@ -41,12 +50,12 @@ const Navbar = () => {
       </button>
 
       <div
-        className="collapse navbar-collapse justify-content-end "
+        className="collapse navbar-collapse justify-content-end"
         id="main-menu"
       >
         <ul className="navbar-nav d-flex">
           <NavItem className="nav-item">
-            <Link to="/dashboard" className="nav-link">
+            <Link to="/dashboard" className="nav-link" onClick={closingToggler}>
               Dashboard
               <FontAwesomeIcon className="ml-2" icon={faColumns} />
             </Link>
@@ -60,7 +69,10 @@ const Navbar = () => {
               {`${user.firstName}`}
               {renderUserIcon()}
             </NormalText>
-            <div className="dropdown-menu dropdown-menu-right">
+            <div
+              className="dropdown-menu dropdown-menu-right"
+              onClick={closingToggler}
+            >
               <Link to="/account" className="dropdown-item">
                 Account
               </Link>

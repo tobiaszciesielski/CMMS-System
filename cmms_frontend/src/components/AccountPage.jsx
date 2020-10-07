@@ -7,13 +7,13 @@ const AccountPage = () => {
   return (
     <div className="container">
       <Card className="text-break text-center mt-4 mx-auto">
-        <h3>Your JSON Web Token is:</h3>
+        <h4>Your JSON Web Token is:</h4>
         <p>{`${token}`}</p>
-        <h3>Your role is:</h3>
+        <h4>Your role is:</h4>
         <p>{`${user.role}`}</p>
-        <h3>Your email is:</h3>
+        <h4>Your email is:</h4>
         <p>{`${user.email}`}</p>
-        <h3>Your full name is:</h3>
+        <h4>Your full name is:</h4>
         <p>{`${user.firstName} ${user.lastName}`}</p>
       </Card>
     </div>
