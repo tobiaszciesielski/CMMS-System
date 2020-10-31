@@ -7,12 +7,17 @@ DECLARE @producer_code NVARCHAR(255) = '8ymh3u48i93f2u9r9777f';
 
 -- If producer exists we select id, if not we insert into producers
 DECLARE @producer_id INT;
-IF NOT EXISTS (SELECT producer_id FROM producers WHERE producer_name = @producer_name) BEGIN 
+IF NOT EXISTS (SELECT producer_id FROM producers 
+							 WHERE producer_name = @producer_name) 
+BEGIN 
 	INSERT INTO producers(producer_name, producer_code)
 	VALUES (@producer_name, @producer_code);
 	SET @producer_id = SCOPE_IDENTITY();
-END ELSE BEGIN 
-	SELECT @producer_id = producer_id FROM producers WHERE producer_name = @producer_name;
+END 
+	ELSE 
+BEGIN 
+	SELECT @producer_id = producer_id FROM producers 
+	WHERE producer_name = @producer_name;
 END 
 
 DECLARE @sub_sub_category_id INT = 9;	-- Should be known before insert
@@ -23,12 +28,17 @@ DECLARE @storing_location_name NVARCHAR(50) = 'R-21/C-66';
 
 -- If name of storing location exists we select id, if not we insert into storing_locations
 DECLARE @storing_location_id INT;
-IF NOT EXISTS (SELECT storing_location_id FROM storing_locations WHERE storing_location_name = @storing_location_name) BEGIN 
+IF NOT EXISTS (SELECT storing_location_id FROM storing_locations 
+							 WHERE storing_location_name = @storing_location_name) 
+BEGIN 
 	INSERT INTO storing_locations(storing_location_name)
 	VALUES (@storing_location_name);
 	SET @storing_location_id = SCOPE_IDENTITY();
-END ELSE BEGIN 
-	SELECT @storing_location_id = storing_location_id FROM storing_locations WHERE storing_location_name = @storing_location_name;
+END 
+	ELSE 
+BEGIN 
+	SELECT @storing_location_id = storing_location_id FROM storing_locations 
+	WHERE storing_location_name = @storing_location_name;
 END 
 
 
