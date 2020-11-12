@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "../styleComponents";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faIndustry,
   faChartBar,

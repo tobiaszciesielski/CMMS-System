@@ -61,6 +61,14 @@ code {
   height: 100%;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
+.action-icon {
+  font-size: 20px;
+}
+
 @media screen and (max-width: 767px) {
   /* Centering navbar items when collapse */
   .navbar .navbar-collapse {
