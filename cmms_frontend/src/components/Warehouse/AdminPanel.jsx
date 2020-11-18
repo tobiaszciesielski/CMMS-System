@@ -8,33 +8,26 @@ const data = {
   categoryList: [
     {
       name: "Hydraulic",
-      id: "1",
       children:[
         {
           name: "Wires",
-          id: "2",
           children: [
             {
               name: "High pressure",
-              id: "3"
             },
             {
               name: "Low pressure",
-              id: "4"
             }
           ]
         },
         {
           name: "Pumps",
-          id: "5",
           children: [
             {
               name: "High power",
-              id: "6"
             },
             {
               name: "Low power",
-              id: "7"
             }
           ]
         }
@@ -43,19 +36,15 @@ const data = {
     },
     {
       name: "Electrical",
-      id: "8",
       children: [
         {
           name: "Engines",
-          id: "9",
           children: [
             {
               name: "Three-Phaze",
-              id: "10"
             },
             {
               name: "Single-Phaze",
-              id: "11"
             }
           ]
         }
@@ -63,15 +52,12 @@ const data = {
     },
     {
       name: "Telefonia",
-      id: "12"
     },
     {
       name: "Narzędzia",
-      id: "13",
       children: [
         {
           name: "Mechaniczne",
-          id: "14"
         }
       ]
     },
@@ -79,69 +65,125 @@ const data = {
 }
 
 const WarehouseAdminPanel = () => {
-  const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2});
-  
+  const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
   const [categoryTree, setCategoryTree] = useState(data);
   const [isOpen, setIsOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
 
-
-  const handleInputChange = (event) => {
-    setCategoryName(event.target.value);
-  }
-
   const openDialog = (category, type) => {
     setDialogType(type);
     setSelectedCategory(category);
     
     type === dialogTypeEnums.add
-      ? setCategoryName('')
-      : setCategoryName(category.name)
+    ? setCategoryName('')
+    : setCategoryName(category.name)
     
-      setIsOpen(true);
+    setIsOpen(true);
   }
   
-  const closeDialog = () => {
-    setIsOpen(false);
+  const handleInputChange = (event) => {
+    setCategoryName(event.target.value);
   }
- 
+
+  const handleDelete = () => {
+    modifyNodeInTree(selectedCategory, dialogTypeEnums.delete);
+    closeDialog();
+  }
+
   const handleEdit = () => {
-    console.log(selectedCategory.name + " changes to " + categoryName)
+    modifyNodeInTree(selectedCategory, dialogTypeEnums.edit);
     closeDialog();
   }
 
   const handleInsert = () => {
-    console.log("New category: " + categoryName + " insert into" + selectedCategory.name);
+    modifyNodeInTree(selectedCategory, dialogTypeEnums.add);
     closeDialog();
   }
 
-  const deleteNode = (category) => {
+  const closeDialog = () => {
+    setIsOpen(false);
+  }
+
+  const modifyNodeInTree = (category, action) => {
     let tmpTree = categoryTree;
-    for (let i = 0; i < tmpTree.categoryList.length; i++) {
-      findNested(tmpTree.categoryList[i], tmpTree.categoryList, category.id, i); // ID is string like «30»
+
+    // this case is for adding new category to the category structure.
+    if (category.id === undefined) {
+      let tmpCategory = {
+        name: categoryName, 
+        children: []
+      }
+      tmpTree.categoryList.push(tmpCategory)
+
+    // this case is for adding new children nodes to existing categories
+    } else { 
+      for (let i = 0; i < tmpTree.categoryList.length; i++) {
+        findNested(tmpTree.categoryList[i], tmpTree.categoryList, category.id, i, action); // ID is string like «30»
+      }
     }
     setCategoryTree({...tmpTree});
   }
 
-  const findNested =  (obj, parent, value, i) => {
-    if (obj.id === value) {
-        parent.splice(i, 1);
+  const findNested =  (obj, parent, value, i, action) => {
+    switch(action) {
+      case dialogTypeEnums.add:
+        if (obj.id === value) {
+          if (!obj.children) {
+            obj.children = [];
+          }
+          obj.children.push({name: categoryName, children: []});
+          return;
+        }
+        break;
+      case dialogTypeEnums.edit:
+        if (obj.id === value) {
+          obj.name = categoryName;
+        }
+        break;
+      case dialogTypeEnums.delete:
+        if (obj.id === value) {
+          parent.splice(i, 1);
+        }
+        break;
+      default: break;
     }
+    
     if (obj && obj.children && obj.children.length > 0) {
       for (let j = 0; j < obj.children.length; j++) {
-          findNested(obj.children[j], obj.children, value, j);
+          findNested(obj.children[j], obj.children, value, j, action);
       }
     }
   }
 
-  const renderAddDialog = () => {
+  const renderDialog = () => {
+
+    let dialogTitle, buttonText, handler;
+    switch (dialogType){
+
+      case dialogTypeEnums.add: 
+        dialogTitle = `Insert new category into "${selectedCategory.name}"`;
+        buttonText = "Insert"
+        handler = handleInsert;
+        break;
+      case dialogTypeEnums.edit: 
+        dialogTitle = "Edit category name";
+        buttonText = "Save"
+        handler = handleEdit;
+        break;
+      case dialogTypeEnums.delete:
+        handler = handleDelete;
+        buttonText = "Yes"
+        dialogTitle = `Are you sure you want delete "${selectedCategory.name}"?`
+    }
+      
     return <Dialog open={isOpen} onClose={closeDialog} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
-        {dialogType === dialogTypeEnums.add ? `Insert new category into ${selectedCategory.name}` : "Edit category name"}
+        {dialogTitle}
       </DialogTitle>
       <DialogContent>
+      {dialogType !== dialogTypeEnums.delete  &&
         <TextField
           autoFocus
           margin="dense"
@@ -150,13 +192,13 @@ const WarehouseAdminPanel = () => {
           fullWidth
           value={categoryName}
           onChange={handleInputChange}
-        />
+        />}
       </DialogContent>
       <DialogActions>
         <Button 
           color="primary"
-          onClick={dialogType === dialogTypeEnums.add ? handleInsert : handleEdit}>
-          {dialogType === dialogTypeEnums.add ? "Insert" : "Save"}
+          onClick={handler}>
+          {buttonText}
         </Button>
         <Button onClick={closeDialog} color="secondary">
           Cancel
@@ -178,15 +220,17 @@ const WarehouseAdminPanel = () => {
 
   const renderFullSetOfIcons = (category) => {
     return <React.Fragment>
-      {renderIcon(faMinusCircle, "text-danger",  () => deleteNode(category))}
+      {renderIcon(faMinusCircle, "text-danger",  () => openDialog(category, dialogTypeEnums.delete))}
       {renderIcon(faEdit, "text-primary", () => openDialog(category, dialogTypeEnums.edit))}
       {renderIcon(faPlusCircle, "text-success", () => openDialog(category, dialogTypeEnums.add))}
     </React.Fragment>
   }
 
   const renderCategoryTree = () => {
+    let id = 0;
     return <CategoryTree>
       {categoryTree.categoryList.map((cat) => {
+        cat.id = id+=1;
           return(
             <Categories key={cat.id}>
               <div className="d-inline-block mb-3">
@@ -196,6 +240,7 @@ const WarehouseAdminPanel = () => {
               {
                 cat.children 
                 && cat.children.map((subCat) => {
+                  subCat.id = id+=1;
                   return <SubCategories key={subCat.id}>
                     <div className="d-inline-block mb-3 ">
                       <span className='h5'>{subCat.name}</span>
@@ -204,9 +249,10 @@ const WarehouseAdminPanel = () => {
                     {
                       subCat.children 
                       && subCat.children.map((subSubCat) => {
+                        subSubCat.id = id+=1
                         return <SubSubCategory key={subSubCat.id}>
                           {subSubCat.name}
-                          {renderIcon(faMinusCircle, "text-danger",  () => deleteNode(subSubCat))}
+                          {renderIcon(faMinusCircle, "text-danger",  () => openDialog(subSubCat, dialogTypeEnums.delete))}
                           {renderIcon(faEdit, "text-primary", () => openDialog(subSubCat, dialogTypeEnums.edit))}
                         </SubSubCategory>
                       })
@@ -230,7 +276,7 @@ const WarehouseAdminPanel = () => {
 
   return <div className="container">
     <Card className="mt-4 mx-auto text-center">
-      {renderAddDialog()}
+      {renderDialog()}
       {renderTitle()}
       {renderCategoryTree()}
       {renderAddButton()}
