@@ -2,37 +2,38 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlusCircle, faMinusCircle, faSitemap, faEdit} from "@fortawesome/free-solid-svg-icons";
 import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle } from '../../styleComponents';
+import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
 
 const data = {
   categoryList: [
     {
-      categoryName: "Hydraulic",
+      name: "Hydraulic",
       id: "1",
       children:[
         {
-          subCategoryName: "Wires",
+          name: "Wires",
           id: "2",
           children: [
             {
-              subSubCategoryName: "High pressure",
+              name: "High pressure",
               id: "3"
             },
             {
-              subSubCategoryName: "Low pressure",
+              name: "Low pressure",
               id: "4"
             }
           ]
         },
         {
-          subCategoryName: "Pumps",
+          name: "Pumps",
           id: "5",
           children: [
             {
-              subSubCategoryName: "High power",
+              name: "High power",
               id: "6"
             },
             {
-              subSubCategoryName: "Low power",
+              name: "Low power",
               id: "7"
             }
           ]
@@ -41,19 +42,19 @@ const data = {
       ]
     },
     {
-      categoryName: "Electrical",
+      name: "Electrical",
       id: "8",
       children: [
         {
-          subCategoryName: "Engines",
+          name: "Engines",
           id: "9",
           children: [
             {
-              subSubCategoryName: "Three-Phaze",
+              name: "Three-Phaze",
               id: "10"
             },
             {
-              subSubCategoryName: "Single-Phaze",
+              name: "Single-Phaze",
               id: "11"
             }
           ]
@@ -61,15 +62,15 @@ const data = {
       ]
     },
     {
-      categoryName: "Telefonia",
+      name: "Telefonia",
       id: "12"
     },
     {
-      categoryName: "Narzędzia",
+      name: "Narzędzia",
       id: "13",
       children: [
         {
-          subCategoryName: "Mechaniczne",
+          name: "Mechaniczne",
           id: "14"
         }
       ]
@@ -78,38 +79,48 @@ const data = {
 }
 
 const WarehouseAdminPanel = () => {
-  const [categoryTree, setCategoryTree] = useState(data) 
+  const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2});
+  
+  const [categoryTree, setCategoryTree] = useState(data);
+  const [isOpen, setIsOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState({name:''});
+  const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
 
-  const renderTitle = () => {
-    return <CategoryTitle>
-    <h2>Category structure</h2>
-      <FontAwesomeIcon className="h3 mt-2" icon={faSitemap}/>
-    </CategoryTitle>
-  };
 
-  // const deleteNode = (object) => {
-  //   for(let i = 0; i < categoryTree.categoryList.length; i++) {
-  //     findChild(object.id, categoryTree.categoryList, categoryTree.categoryList[i], i)
-  //   }
-  // }
+  const handleInputChange = (event) => {
+    setCategoryName(event.target.value);
+  }
 
-  // const findChild = (id, parent, object, i) => {
-  //   if (id === object.id) {
-  //     parent.splice(i, 1);
-  //     console.log(parent[i]);
-  //   }
+  const openDialog = (category, type) => {
+    setDialogType(type);
+    setSelectedCategory(category);
+    
+    type === dialogTypeEnums.add
+      ? setCategoryName('')
+      : setCategoryName(category.name)
+    
+      setIsOpen(true);
+  }
+  
+  const closeDialog = () => {
+    setIsOpen(false);
+  }
+ 
+  const handleEdit = () => {
+    console.log(selectedCategory.name + " changes to " + categoryName)
+    closeDialog();
+  }
 
-  //   if (object.children) {
-  //       for (let j = 0; j < object.children.length; j++) {
-  //         findChild(id, object.children, object.children[j], j);
-  //       }
-  //     }
-  // }
+  const handleInsert = () => {
+    console.log("New category: " + categoryName + " insert into" + selectedCategory.name);
+    closeDialog();
+  }
 
-  const deleteNode = (object) => {
+  const deleteNode = (category) => {
     let tmpTree = categoryTree;
     for (let i = 0; i < tmpTree.categoryList.length; i++) {
-      findNested(tmpTree.categoryList[i], tmpTree.categoryList, object.id, i); // ID is string like «30»
+      findNested(tmpTree.categoryList[i], tmpTree.categoryList, category.id, i); // ID is string like «30»
     }
     setCategoryTree({...tmpTree});
   }
@@ -125,16 +136,51 @@ const WarehouseAdminPanel = () => {
     }
   }
 
+  const renderAddDialog = () => {
+    return <Dialog open={isOpen} onClose={closeDialog} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">
+        {dialogType === dialogTypeEnums.add ? `Insert new category into ${selectedCategory.name}` : "Edit category name"}
+      </DialogTitle>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          type="text"
+          fullWidth
+          value={categoryName}
+          onChange={handleInputChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button 
+          color="primary"
+          onClick={dialogType === dialogTypeEnums.add ? handleInsert : handleEdit}>
+          {dialogType === dialogTypeEnums.add ? "Insert" : "Save"}
+        </Button>
+        <Button onClick={closeDialog} color="secondary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
+  }
+
+  const renderTitle = () => {
+    return <CategoryTitle>
+    <h2>Category structure</h2>
+      <FontAwesomeIcon className="h3 mt-2" icon={faSitemap}/>
+    </CategoryTitle>
+  };
 
   const renderIcon = (icon, color, callback) => {
     return <FontAwesomeIcon className={'pointer ml-3 action-icon ' + color} icon={icon} onClick={callback}/>
   }
-    
-  const renderFullSetOfIcons = (object) => {
+
+  const renderFullSetOfIcons = (category) => {
     return <React.Fragment>
-      {renderIcon(faMinusCircle, "text-danger",  () => deleteNode(object))}
-      {renderIcon(faEdit, "text-primary", () => console.log('edit'))}
-      {renderIcon(faPlusCircle, "text-success", () => console.log('add'))}
+      {renderIcon(faMinusCircle, "text-danger",  () => deleteNode(category))}
+      {renderIcon(faEdit, "text-primary", () => openDialog(category, dialogTypeEnums.edit))}
+      {renderIcon(faPlusCircle, "text-success", () => openDialog(category, dialogTypeEnums.add))}
     </React.Fragment>
   }
 
@@ -144,7 +190,7 @@ const WarehouseAdminPanel = () => {
           return(
             <Categories key={cat.id}>
               <div className="d-inline-block mb-3">
-                <span className='h4'>{cat.categoryName}</span>
+                <span className='h4'>{cat.name}</span>
                 {renderFullSetOfIcons(cat)}
               </div>
               {
@@ -152,16 +198,16 @@ const WarehouseAdminPanel = () => {
                 && cat.children.map((subCat) => {
                   return <SubCategories key={subCat.id}>
                     <div className="d-inline-block mb-3 ">
-                      <span className='h5'>{subCat.subCategoryName}</span>
+                      <span className='h5'>{subCat.name}</span>
                       {renderFullSetOfIcons(subCat)}
                     </div>
                     {
                       subCat.children 
                       && subCat.children.map((subSubCat) => {
                         return <SubSubCategory key={subSubCat.id}>
-                          {subSubCat.subSubCategoryName}
+                          {subSubCat.name}
                           {renderIcon(faMinusCircle, "text-danger",  () => deleteNode(subSubCat))}
-                          {renderIcon(faEdit, "text-primary", () => console.log(subSubCat))}
+                          {renderIcon(faEdit, "text-primary", () => openDialog(subSubCat, dialogTypeEnums.edit))}
                         </SubSubCategory>
                       })
                     }
@@ -171,16 +217,20 @@ const WarehouseAdminPanel = () => {
             </Categories>
           )
         }
-)}
+      )}
     </CategoryTree>
   };
 
   const renderAddButton = () => {
-    return <div className="btn btn-primary btn-small align-self-center mt-5">New category</div>
+    return <div className="btn btn-primary btn-small align-self-center mt-5" 
+      onClick={() => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
+      New category
+    </div>
   };
 
   return <div className="container">
     <Card className="mt-4 mx-auto text-center">
+      {renderAddDialog()}
       {renderTitle()}
       {renderCategoryTree()}
       {renderAddButton()}
