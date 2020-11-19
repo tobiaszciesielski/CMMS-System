@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import {NormalText, Nav, NavItem} from "../styleComponents"
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
@@ -94,19 +94,5 @@ const Navbar = () => {
     </Nav>
   );
 };
-
-const NormalText = styled.i`
-  font-style: normal;
-  cursor: pointer;
-`;
-
-const Nav = styled.nav`
-  box-shadow: 3px 3px 8px rgb(0, 0, 0, 0.1);
-`;
-
-const NavItem = styled.li`
-  margin-left: 15px;
-  font-size: 1.1rem;
-`;
 
 export default Navbar;

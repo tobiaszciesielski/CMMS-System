@@ -176,7 +176,9 @@ const WarehouseAdminPanel = () => {
         handler = handleDelete;
         buttonText = "Yes"
         dialogTitle = `Are you sure you want delete "${selectedCategory.name}"?`
-    }
+        break;
+      default: break;
+     }
       
     return <Dialog open={isOpen} onClose={closeDialog} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">

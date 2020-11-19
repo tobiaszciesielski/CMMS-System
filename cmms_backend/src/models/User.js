@@ -4,22 +4,27 @@ const _ = require("lodash");
 const jwt = require("jsonwebtoken");
 const config = require("../config")
 
+const { RoleModel } = require("./Role")
+
 const UserModel = {
+  id: sql.Int,
   login: sql.NVarChar(50),
   password: sql.NVarChar(50),
   email: sql.NVarChar(50),
   firstName: sql.NVarChar(50),
   lastName: sql.NVarChar(50),
-  role: sql.NVarChar(10),
+  lastSession: sql.DateTime,
+  role: RoleModel,
 };
 
 const validateSchema = {
+  id: Joi.number().min(0),
   login: Joi.string().max(UserModel.login.length).required(),
   password: Joi.string().max(UserModel.password.length).required(),
   email: Joi.string().max(UserModel.email.length).required().email(),
   firstName: Joi.string().max(UserModel.firstName.length).required(),
   lastName: Joi.string().max(UserModel.lastName.length).required(),
-  role: Joi.string().max(UserModel.role.length).required(),
+  lastSession: Joi.string(),
 };
 
 const validateUser = (userObject) => {

@@ -11,5 +11,5 @@ const poolPromise = new sql.ConnectionPool(config.sql)
 
 module.exports = {
   sql,
-  poolPromise,
+  poolPromise
 };

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import styled from "styled-components";
+import { Form, FormWrapper } from "../styleComponents"
 import { useAuth } from "../context/AuthProvider";
 import { Input } from "./common/Input";
 
@@ -76,20 +76,5 @@ export const SubmitForm = () => {
     </FormWrapper>
   );
 };
-
-const FormWrapper = styled.div`
-  max-width: 350px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  height: 100%;
-`;
-
-const Form = styled.form`
-  padding: 25px 15px;
-  background-color: whitesmoke;
-  border-radius: 6px;
-  box-shadow: 3px 3px 8px rgb(0, 0, 0, 0.1);
-`;
 
 export default SubmitForm;
