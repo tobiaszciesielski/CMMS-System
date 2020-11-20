@@ -17,6 +17,9 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",
     "mssql": "^6.2.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "sequelize": "^6.3.5",
+    "sequelize-auto": "^0.7.2",
+    "tedious": "^9.2.1"
   }
 }

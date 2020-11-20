@@ -22,10 +22,16 @@ module.exports = {
   port: PORT,
   jwtPrivateKey: JWT_PRIVATE_KEY,
   sql: {
-    server: SQL_SERVER,
+    dialect: "mssql",
+    host: SQL_SERVER,
     database: SQL_DATABASE,
     password: SQL_PASSWORD,
-    user: SQL_USER,
+    username: SQL_USER,
+    dialectOptions: {
+      options: {
+      validateBulkLoadParameters: true
+      }
+    },
     options: {
       encrypt: sqlEncript,
       enableArithAbort: sqlArithAbort,
