@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const _ = require("lodash");
+
 const User = require("../models/User");
 const { validateUser } = require("../models/User");
 

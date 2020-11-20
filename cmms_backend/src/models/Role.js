@@ -13,7 +13,7 @@ const RoleModel = {
 
 const RoleKeys = Object.keys(RoleModel) ;
 
-const getAllRoles = async () => {
+const getAll = async () => {
   const pool = await poolPromise;
   const result = await pool.request()
     .query(`
@@ -30,7 +30,30 @@ const getAllRoles = async () => {
   return roles
 } 
 
+const getById = async (roleId, pool) => {
+  const { id, role } = RoleModel
+  const idParam = "id"
+
+  if (!pool) pool = await poolPromise;
+  const result = await pool.request()
+    .input(idParam, id.sqlType, roleId)
+    .query(`
+      SELECT 
+        ${id.colName} as [${RoleKeys[0]}], 
+        ${role.colName} as [${RoleKeys[1]}]
+      FROM roles
+      WHERE ${id.colName}=@${idParam}
+    `);
+
+  const {
+    recordset: [roles]
+  } = result
+
+  return roles
+}
+
 module.exports = {
   RoleModel,
-  getAllRoles
+  getAll,
+  getById
 };

@@ -4,26 +4,49 @@ const _ = require("lodash");
 const jwt = require("jsonwebtoken");
 const config = require("../config")
 
-const { RoleModel } = require("./Role")
+const Role = require("./Role");
 
 const UserModel = {
-  id: sql.Int,
-  login: sql.NVarChar(50),
-  password: sql.NVarChar(50),
-  email: sql.NVarChar(50),
-  firstName: sql.NVarChar(50),
-  lastName: sql.NVarChar(50),
-  lastSession: sql.DateTime,
-  role: RoleModel,
+  id: {
+    colName: "user_id",
+    sqlType: sql.Int,    
+  },
+  login: {
+    colName: "login",
+    sqlType: sql.NVarChar(50),    
+  },
+  password: {
+    colName: "password",
+    sqlType: sql.NVarChar(50),    
+  },
+  email: {
+    colName: "email",
+    sqlType: sql.NVarChar(50),    
+  },
+  firstName: {
+    colName: "first_name",
+    sqlType: sql.NVarChar(50),    
+  },
+  lastName: {
+    colName: "last_name",
+    sqlType: sql.NVarChar(50),    
+  },
+  role: Role.RoleModel,
+  lastSession: {
+    colName: "last_session",
+    sqlType: sql.DateTime,    
+  },
 };
+
+const UserKeys = Object.keys(UserModel) ;
 
 const validateSchema = {
   id: Joi.number().min(0),
-  login: Joi.string().max(UserModel.login.length).required(),
-  password: Joi.string().max(UserModel.password.length).required(),
-  email: Joi.string().max(UserModel.email.length).required().email(),
-  firstName: Joi.string().max(UserModel.firstName.length).required(),
-  lastName: Joi.string().max(UserModel.lastName.length).required(),
+  login: Joi.string().max(UserModel.login.sqlType.length).required(),
+  password: Joi.string().max(UserModel.password.sqlType.length).required(),
+  email: Joi.string().max(UserModel.email.sqlType.length).required().email(),
+  firstName: Joi.string().max(UserModel.firstName.sqlType.length).required(),
+  lastName: Joi.string().max(UserModel.lastName.sqlType.length).required(),
   lastSession: Joi.string(),
 };
 
@@ -43,30 +66,58 @@ const createAuthToken = (user) => {
   return jwt.sign(_.omit(user, "password"), config.jwtPrivateKey);
 };
 
-const findById = async (id) => {
+const findById = async (userId) => {
+  const {id, login, password, email, firstName, lastName, role, lastSession} = UserModel;
+  const idParam = "id"
+  console.log(id, login, password, email, firstName, lastName, role, lastSession)
   const pool = await poolPromise;
-  const result = await pool.request().input("id", sql.Int, id).query(`
-        SELECT * FROM Users 
-          WHERE
-            id=@id
+  const result = await pool.request().input(idParam, id.sqlType, userId).query(`
+    SELECT 
+      ${id.colName} as [${UserKeys[0]}], 
+      ${login.colName} as [${UserKeys[1]}], 
+      ${password.colName} as [${UserKeys[2]}], 
+      ${email.colName} as [${UserKeys[3]}], 
+      ${firstName.colName} as [${UserKeys[4]}], 
+      ${lastName.colName} as [${UserKeys[5]}], 
+      ${role.id.colName} as [${UserKeys[6]}], 
+      ${lastSession.colName} as [${UserKeys[7]}]
+    FROM users 
+    WHERE ${id.colName}=@${idParam}
     `);
   const {
     recordset: [user],
   } = result;
+  console.log(result)
+  const r = await Role.getById(user.role, pool)
+  pool.close();
+  user.role = r
   return user;
 };
 
-const findByLogin = async (login) => {
+const findByLogin = async (userLogin) => {
+  const {id, login, password, email, firstName, lastName, role, lastSession} = UserModel;
+  const loginParam = "login"
+
   const pool = await poolPromise;
-  const result = await pool.request().input("login", UserModel.login, login)
-    .query(`
-        SELECT * FROM Users 
-          WHERE
-            login=@login
+  const result = await pool.request().input(loginParam, login.sqlType, userLogin).query(`
+    SELECT 
+      ${id.colName} as [${UserKeys[0]}], 
+      ${login.colName} as [${UserKeys[1]}], 
+      ${password.colName} as [${UserKeys[2]}], 
+      ${email.colName} as [${UserKeys[3]}], 
+      ${firstName.colName} as [${UserKeys[4]}], 
+      ${lastName.colName} as [${UserKeys[5]}], 
+      ${role.id.colName} as [${UserKeys[6]}], 
+      ${lastSession.colName} as [${UserKeys[7]}]
+    FROM users 
+    WHERE ${login.colName}=@${loginParam}
     `);
   const {
     recordset: [user],
   } = result;
+  const r = await Role.getById(user.role, pool)
+  pool.close()
+  user.role = r
   return user;
 };
 
