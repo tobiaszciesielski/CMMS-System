@@ -4,6 +4,8 @@ import { Card } from "./../styleComponents";
 
 const AccountPage = () => {
   const { user, token } = useAuth();
+
+  console.log(user)
   return (
     <div className="container">
       <Card className="text-break text-center mt-4 mx-auto">

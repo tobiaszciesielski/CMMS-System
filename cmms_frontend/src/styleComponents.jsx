@@ -46,21 +46,19 @@ export const CategoryTitle = styled.div`
 `;
 
 export const CategoryTree = styled.div`
-  text-align: center;
-  display: flex;
-  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
 `;
 
 export const Categories = styled.div`
-display: block;
-transform: translateX(-70px)
+  text-align: left;
 `;
 
 export const SubCategories = styled.div`
-  transform: translateX(80px)
+  text-align: center;
 `;
 
 export const SubSubCategory = styled.h6`
-    transform: translateX(70px);
-    margin: 0px 0 20px 0;
+  text-align: right;
+  margin: 0px 0 20px 0;
 `

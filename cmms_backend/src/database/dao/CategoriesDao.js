@@ -1,5 +1,19 @@
 const db = require("../db")
+const categories = require("../models/categories")
 
 const {Categories, SubCategories, SubSubCategories} = db.models
 
-module.exports = {}
+const getCategoriesTree = async () => {
+  return Categories.findAll({
+    include: {
+      model: SubCategories,
+      include: {
+        model: SubSubCategories
+      }
+    }
+  })
+} 
+
+module.exports = {
+  getCategoriesTree
+}

@@ -28,6 +28,9 @@ router.post("/", async (req, res) => {
       return res.status(400).send("Password incorrect!");    
     }
 
+    user.role = user.Role.roleName
+    delete user.Role
+    
     const token = createAuthToken(user);
     res
     .header("x-auth-token", token)
