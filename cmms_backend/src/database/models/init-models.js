@@ -1,67 +1,67 @@
 var DataTypes = require("sequelize").DataTypes;
-var _categories = require("./Categories");
-var _items = require("./Items");
-var _producers = require("./Producers");
-var _properties = require("./Properties");
-var _propertiesValues = require("./PropertiesValues");
-var _rentals = require("./Rentals");
-var _roles = require("./Roles");
-var _storingLocations = require("./StoringLocations");
-var _subCategories = require("./SubCategories");
-var _subSubCategories = require("./SubSubCategories");
-var _users = require("./Users");
-var _values = require("./Values");
+var _Categories = require("./categories");
+var _Items = require("./items");
+var _Producers = require("./producers");
+var _Properties = require("./properties");
+var _PropertiesValues = require("./propertiesValues");
+var _Rentals = require("./rentals");
+var _Roles = require("./roles");
+var _StoringLocations = require("./storingLocations");
+var _SubCategories = require("./subCategories");
+var _SubSubCategories = require("./subSubCategories");
+var _Users = require("./users");
+var _Values = require("./values");
 
 function initModels(sequelize) {
-  var categories = _categories(sequelize, DataTypes);
-  var items = _items(sequelize, DataTypes);
-  var producers = _producers(sequelize, DataTypes);
-  var properties = _properties(sequelize, DataTypes);
-  var propertiesValues = _propertiesValues(sequelize, DataTypes);
-  var rentals = _rentals(sequelize, DataTypes);
-  var roles = _roles(sequelize, DataTypes);
-  var storingLocations = _storingLocations(sequelize, DataTypes);
-  var subCategories = _subCategories(sequelize, DataTypes);
-  var subSubCategories = _subSubCategories(sequelize, DataTypes);
-  var users = _users(sequelize, DataTypes);
-  var values = _values(sequelize, DataTypes);
+  var Categories = _Categories(sequelize, DataTypes);
+  var Items = _Items(sequelize, DataTypes);
+  var Producers = _Producers(sequelize, DataTypes);
+  var Properties = _Properties(sequelize, DataTypes);
+  var PropertiesValues = _PropertiesValues(sequelize, DataTypes);
+  var Rentals = _Rentals(sequelize, DataTypes);
+  var Roles = _Roles(sequelize, DataTypes);
+  var StoringLocations = _StoringLocations(sequelize, DataTypes);
+  var SubCategories = _SubCategories(sequelize, DataTypes);
+  var SubSubCategories = _SubSubCategories(sequelize, DataTypes);
+  var Users = _Users(sequelize, DataTypes);
+  var Values = _Values(sequelize, DataTypes);
 
-  items.belongsTo(producers, { foreignKey: "producerId"});
-  producers.hasMany(items, { foreignKey: "producerId"});
-  items.belongsTo(storingLocations, { foreignKey: "storingLocationId"});
-  storingLocations.hasMany(items, { foreignKey: "storingLocationId"});
-  items.belongsTo(subSubCategories, { foreignKey: "subSubCategoryId"});
-  subSubCategories.hasMany(items, { foreignKey: "subSubCategoryId"});
-  propertiesValues.belongsTo(items, { foreignKey: "itemId"});
-  items.hasMany(propertiesValues, { foreignKey: "itemId"});
-  propertiesValues.belongsTo(properties, { foreignKey: "propertyId"});
-  properties.hasMany(propertiesValues, { foreignKey: "propertyId"});
-  propertiesValues.belongsTo(values, { foreignKey: "valueId"});
-  values.hasMany(propertiesValues, { foreignKey: "valueId"});
-  rentals.belongsTo(items, { foreignKey: "itemId"});
-  items.hasMany(rentals, { foreignKey: "itemId"});
-  rentals.belongsTo(users, { foreignKey: "userId"});
-  users.hasMany(rentals, { foreignKey: "userId"});
-  subCategories.belongsTo(categories, { foreignKey: "categoryId"});
-  categories.hasMany(subCategories, { foreignKey: "categoryId"});
-  subSubCategories.belongsTo(subCategories, { foreignKey: "subCategoryId"});
-  subCategories.hasMany(subSubCategories, { foreignKey: "subCategoryId"});
-  users.belongsTo(roles, { foreignKey: "roleId"});
-  roles.hasMany(users, { foreignKey: "roleId"});
+  Items.belongsTo(Producers, { foreignKey: "producerId"});
+  Producers.hasMany(Items, { foreignKey: "producerId"});
+  Items.belongsTo(StoringLocations, { foreignKey: "storingLocationId"});
+  StoringLocations.hasMany(Items, { foreignKey: "storingLocationId"});
+  Items.belongsTo(SubSubCategories, { foreignKey: "subSubCategoryId"});
+  SubSubCategories.hasMany(Items, { foreignKey: "subSubCategoryId"});
+  PropertiesValues.belongsTo(Items, { foreignKey: "itemId"});
+  Items.hasMany(PropertiesValues, { foreignKey: "itemId"});
+  PropertiesValues.belongsTo(Properties, { foreignKey: "propertyId"});
+  Properties.hasMany(PropertiesValues, { foreignKey: "propertyId"});
+  PropertiesValues.belongsTo(Values, { foreignKey: "valueId"});
+  Values.hasMany(PropertiesValues, { foreignKey: "valueId"});
+  Rentals.belongsTo(Items, { foreignKey: "itemId"});
+  Items.hasMany(Rentals, { foreignKey: "itemId"});
+  Rentals.belongsTo(Users, { foreignKey: "userId"});
+  Users.hasMany(Rentals, { foreignKey: "userId"});
+  SubCategories.belongsTo(Categories, { foreignKey: "categoryId"});
+  Categories.hasMany(SubCategories, { foreignKey: "categoryId"});
+  SubSubCategories.belongsTo(SubCategories, { foreignKey: "subCategoryId"});
+  SubCategories.hasMany(SubSubCategories, { foreignKey: "subCategoryId"});
+  Users.belongsTo(Roles, { foreignKey: "roleId"});
+  Roles.hasMany(Users, { foreignKey: "roleId"});
 
   return {
-    categories,
-    items,
-    producers,
-    properties,
-    propertiesValues,
-    rentals,
-    roles,
-    storingLocations,
-    subCategories,
-    subSubCategories,
-    users,
-    values,
+    Categories,
+    Items,
+    Producers,
+    Properties,
+    PropertiesValues,
+    Rentals,
+    Roles,
+    StoringLocations,
+    SubCategories,
+    SubSubCategories,
+    Users,
+    Values,
   };
 }
 module.exports = initModels;

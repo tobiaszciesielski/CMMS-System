@@ -2,10 +2,10 @@
 
 const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  return roles.init(sequelize, DataTypes);
+  return Roles.init(sequelize, DataTypes);
 }
 
-class roles extends Sequelize.Model {
+class Roles extends Sequelize.Model {
   static init(sequelize, DataTypes) {
   super.init({
     roleId: {
@@ -35,6 +35,6 @@ class roles extends Sequelize.Model {
       },
     ]
   });
-  return roles;
+  return Roles;
   }
 }

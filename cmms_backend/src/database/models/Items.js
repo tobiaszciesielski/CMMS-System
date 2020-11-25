@@ -2,10 +2,10 @@
 
 const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  return items.init(sequelize, DataTypes);
+  return Items.init(sequelize, DataTypes);
 }
 
-class items extends Sequelize.Model {
+class Items extends Sequelize.Model {
   static init(sequelize, DataTypes) {
   super.init({
     itemId: {
@@ -84,6 +84,6 @@ class items extends Sequelize.Model {
       },
     ]
   });
-  return items;
+  return Items;
   }
 }

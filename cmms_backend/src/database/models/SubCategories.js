@@ -2,10 +2,10 @@
 
 const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  return subCategories.init(sequelize, DataTypes);
+  return SubCategories.init(sequelize, DataTypes);
 }
 
-class subCategories extends Sequelize.Model {
+class SubCategories extends Sequelize.Model {
   static init(sequelize, DataTypes) {
   super.init({
     subCategoryId: {
@@ -44,6 +44,6 @@ class subCategories extends Sequelize.Model {
       },
     ]
   });
-  return subCategories;
+  return SubCategories;
   }
 }

@@ -2,10 +2,10 @@
 
 const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  return properties.init(sequelize, DataTypes);
+  return Properties.init(sequelize, DataTypes);
 }
 
-class properties extends Sequelize.Model {
+class Properties extends Sequelize.Model {
   static init(sequelize, DataTypes) {
   super.init({
     propertyId: {
@@ -35,6 +35,6 @@ class properties extends Sequelize.Model {
       },
     ]
   });
-  return properties;
+  return Properties;
   }
 }
