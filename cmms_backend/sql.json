@@ -1,0 +1,12 @@
+{
+    "dialect": "mssql",
+    "server": "LAPTOP-O5V4J9HL",
+    "database": "Magazine_Module_DB",
+    "password": "1234",
+    "user": "sa",
+    "camelCase": true,
+    "options": {
+        "encrypt": false,
+        "enableArithAbort": true
+    }
+}

@@ -4,6 +4,7 @@ const assert = require("assert");
 dotenv.config();
 
 const {
+  NODE_ENV,
   PORT,
   JWT_PRIVATE_KEY,
   SQL_PASSWORD,
@@ -22,14 +23,22 @@ module.exports = {
   port: PORT,
   jwtPrivateKey: JWT_PRIVATE_KEY,
   sql: {
-    server: SQL_SERVER,
+    dialect: "mssql",
+    timezone: "+01:00",
+    host: SQL_SERVER,
     database: SQL_DATABASE,
     password: SQL_PASSWORD,
-    user: SQL_USER,
+    username: SQL_USER,
+    dialectOptions: {
+      options: {
+      validateBulkLoadParameters: true
+      }
+    },
     options: {
       encrypt: sqlEncript,
       enableArithAbort: sqlArithAbort,
     },
+    logging: NODE_ENV === 'development' ? true : false
   },
 };
 
