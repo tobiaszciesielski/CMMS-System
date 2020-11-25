@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-CategoriesDao
+const CategoriesDao = require("../database/dao/CategoriesDao")
 
 router.get("/", async (req, res) => {
   console.log("get /categories", req.body)
