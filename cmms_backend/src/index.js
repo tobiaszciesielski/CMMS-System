@@ -18,5 +18,5 @@ app.listen(port, () => console.log(`Server listen on port ${config.port}`));
 app.use("/login", authRouter);
 
 // categories
-app.use("/categories/", categoriesRouter)
+app.use("/categories", categoriesRouter)
 

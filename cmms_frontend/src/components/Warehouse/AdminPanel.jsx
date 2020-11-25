@@ -158,7 +158,6 @@ const WarehouseAdminPanel = () => {
   }
 
   const renderDialog = () => {
-
     let dialogTitle, buttonText, handler;
     switch (dialogType){
 
