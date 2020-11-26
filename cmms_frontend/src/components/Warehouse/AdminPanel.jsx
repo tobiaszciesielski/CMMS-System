@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faPlusCircle, faMinusCircle, faSitemap, faEdit} from "@fortawesome/free-solid-svg-icons";
-import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle } from '../../styleComponents';
+import {faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
+import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle, ExitButton} from '../../styleComponents';
 import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
+import {useHistory} from "react-router-dom"
+
 
 const data = {
   categoryList: [
@@ -71,6 +73,7 @@ const WarehouseAdminPanel = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
+  const history = useHistory()
 
   const openDialog = (category, type) => {
     setDialogType(type);
@@ -208,6 +211,16 @@ const WarehouseAdminPanel = () => {
     </Dialog>
   }
 
+  const renderExitButton = () => {
+    return <div className="text-left mb-2 m-md-0">
+      <ExitButton className="btn btn-outline-danger" onClick={() => {history.goBack()}
+      }>
+        Exit
+        <FontAwesomeIcon className="ml-2" icon={faSignOutAlt}/>
+      </ExitButton>
+    </div> 
+  }
+
   const renderTitle = () => {
     return <CategoryTitle>
     <h2>Category structure</h2>
@@ -269,15 +282,18 @@ const WarehouseAdminPanel = () => {
   };
 
   const renderAddButton = () => {
-    return <div className="btn btn-primary btn-small align-self-center mt-5" 
-      onClick={() => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
-      New category
+    return <div className="text-center">
+      <div className="btn btn-primary btn-small mt-4" 
+        onClick={() => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
+        New category
+      </div>
     </div>
   };
 
   return <div className="container">
-    <Card className="mt-4 mx-auto text-center">
+    <Card className="mt-4 mx-auto position-relative">
       {renderDialog()}
+      {renderExitButton()}
       {renderTitle()}
       {renderCategoryTree()}
       {renderAddButton()}

@@ -62,3 +62,6 @@ export const SubSubCategory = styled.h6`
   text-align: right;
   margin: 0px 0 20px 0;
 `
+export const ExitButton = styled.div`
+  width: 100px;
+`
