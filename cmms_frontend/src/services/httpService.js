@@ -6,4 +6,9 @@ export async function post(path, request) {
   return response;
 }
 
-export default { post };
+export async function get(path) {
+  const response = await Axios.get(`${BASE_URL}${path}`);
+  return response;
+}
+
+export default { post, get };

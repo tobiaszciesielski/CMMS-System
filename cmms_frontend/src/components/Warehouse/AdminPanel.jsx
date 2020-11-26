@@ -1,79 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
 import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle, ExitButton} from '../../styleComponents';
 import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
 import {useHistory} from "react-router-dom"
-
-
-const data = {
-  categoryList: [
-    {
-      name: "Hydraulic",
-      children:[
-        {
-          name: "Wires",
-          children: [
-            {
-              name: "High pressure",
-            },
-            {
-              name: "Low pressure",
-            }
-          ]
-        },
-        {
-          name: "Pumps",
-          children: [
-            {
-              name: "High power",
-            },
-            {
-              name: "Low power",
-            }
-          ]
-        }
-
-      ]
-    },
-    {
-      name: "Electrical",
-      children: [
-        {
-          name: "Engines",
-          children: [
-            {
-              name: "Three-Phaze",
-            },
-            {
-              name: "Single-Phaze",
-            }
-          ]
-        }
-      ]
-    },
-    {
-      name: "Telefonia",
-    },
-    {
-      name: "Narzędzia",
-      children: [
-        {
-          name: "Mechaniczne",
-        }
-      ]
-    },
-  ]
-}
+import {get} from "../../services/httpService"
 
 const WarehouseAdminPanel = () => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
-  const [categoryTree, setCategoryTree] = useState(data);
+  const history = useHistory()
+  
+  const [categoryTree, setCategoryTree] = useState({categoryList:[]});
   const [isOpen, setIsOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
-  const history = useHistory()
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await get('/categories');
+      const data = {
+        categoryList: response.data
+      }
+      setIsLoading(false)
+      setCategoryTree({...data})
+    }
+    fetchData();
+  }, [isLoading]); // Or [] if effect doesn't need props or state
 
   const openDialog = (category, type) => {
     setDialogType(type);
@@ -282,9 +237,10 @@ const WarehouseAdminPanel = () => {
   };
 
   const renderAddButton = () => {
+    const isDisabled = isLoading ? "disabled" : ""
     return <div className="text-center">
-      <div className="btn btn-primary btn-small mt-4" 
-        onClick={() => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
+      <div className={`btn btn-primary btn-small mt-4 ${isDisabled}`}
+        onClick={isLoading ? null : () => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
         New category
       </div>
     </div>
@@ -295,7 +251,9 @@ const WarehouseAdminPanel = () => {
       {renderDialog()}
       {renderExitButton()}
       {renderTitle()}
-      {renderCategoryTree()}
+      {isLoading 
+        ? <div className= "text-center">Loading...</div>
+        : renderCategoryTree()}
       {renderAddButton()}
     </Card>
   </div>
