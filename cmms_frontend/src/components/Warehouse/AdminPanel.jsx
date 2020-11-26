@@ -5,6 +5,7 @@ import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryT
 import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
 import {useHistory} from "react-router-dom"
 import {get} from "../../services/httpService"
+import { CircularProgress } from '@material-ui/core/'
 
 const WarehouseAdminPanel = () => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
@@ -252,7 +253,7 @@ const WarehouseAdminPanel = () => {
       {renderExitButton()}
       {renderTitle()}
       {isLoading 
-        ? <div className= "text-center">Loading...</div>
+        ? <div className= "text-center my-3"><CircularProgress color="inherit"/></div>
         : renderCategoryTree()}
       {renderAddButton()}
     </Card>
