@@ -5,12 +5,40 @@ const {Categories, SubCategories, SubSubCategories} = db.models
 
 const getCategoriesTree = async () => {
   return Categories.findAll({
-    include: {
+    attributes: [
+      ["category_id", "id"], // categoryId as id
+      ["category_name", "name"], // "category_name as name"
+    ],
+    include: [{
       model: SubCategories,
-      include: {
-        model: SubSubCategories
+      attributes: [
+        ["sub_category_id", "id"], // categoryId as id
+        ["sub_category_name", "name"], // "category_name as name"
+      ],
+      include: [{
+        attributes: [
+          ["sub_sub_category_id", "id"], // categoryId as id
+          ["sub_sub_category_name", "name"], // "category_name as name"
+        ],
+        model: SubSubCategories,
+      }],
+    }],
+  }).then(res => {
+    // used to keep nested data as array
+    res = JSON.parse(JSON.stringify(res))
+
+    // rename sub cat to chlidren
+    for (let i = 0; i < res.length; i++) {
+      res[i].children = res[i].SubCategories;
+      
+      // rename sub sub cat to chlidren
+      for (let j = 0; j < res[i].children.length; j++) {
+        res[i].children[j].children = res[i].children[j].SubSubCategories;
+        delete res[i].children[j].SubSubCategories;
       }
+      delete res[i].SubCategories;
     }
+    return res
   })
 } 
 
