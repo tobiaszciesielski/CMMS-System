@@ -10,11 +10,14 @@ DATE.prototype._stringify = function _stringify(date, options) {
   return date.format('YYYY-MM-DD HH:mm:ss.SSS');
 };
 
-const database = new Sequelize(sql)
+const database = new Sequelize(sql);
 
-database.authenticate()
-  .then(() => console.log("Connected with ", database.getDialect(), ": ", database.getDatabaseName()))
+// https://stackoverflow.com/a/53554207
+;(async () => {
+  await database.authenticate()
+  .then(() => console.log("Connected with", database.getDialect(), ":", database.getDatabaseName()))
   .catch(err => console.log("DB:Error: " + err));
+})();
 
 initModels(database);
 
