@@ -17,14 +17,6 @@ const Sidebar = ({isFetching, categories}) => {
   const history = useHistory();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const [categoryTree, setCategoryTree] = useState(categories);
-  const [isLoading, setIsLoading] = useState(isFetching);
-
-  useEffect(() => {
-    setCategoryTree(categories);
-    setIsLoading(isFetching);
-  }, [isFetching, categories]);
-
   useEffect(() => {
     window.addEventListener(
       "resize",
@@ -56,7 +48,7 @@ const Sidebar = ({isFetching, categories}) => {
           </h5>
         </button>
       )}
-      <Categories />
+      <Categories isFetching={isFetching} categories={categories}/>
       <Filters />
     </nav>
   );

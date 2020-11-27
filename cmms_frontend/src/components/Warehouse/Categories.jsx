@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClone } from "@fortawesome/free-regular-svg-icons";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
-const Categories = () => {
+const Categories = ({isFetching, categories}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const [categoryTree, setCategoryTree] = useState(categories);
+  const [isLoading, setIsLoading] = useState(isFetching);
+
+  useEffect(() => {
+    setCategoryTree(categories);
+    console.log(categories)
+  }, [isFetching]);
 
   return (
     <React.Fragment>

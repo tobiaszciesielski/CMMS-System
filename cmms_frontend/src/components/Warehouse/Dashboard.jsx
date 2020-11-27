@@ -39,53 +39,55 @@ const Dashboard = ({isFetching, categories}) => {
       <div className="container-fluid">
         <div className="row warehouse-wrapper">
           <Sidebar isFetching={isFetching} categories={categories}/>
-          {isLoading 
-          ? <div className= "text-center my-3"><CircularProgress color="inherit"/></div>
-          : <div className="col-md-9 col-xl-10">
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
-            <Card className="mt-4">
-              <h1>Warehouse Content</h1>
-              <ul>
-                <li>Some</li>
-                <li>Content</li>
-              </ul>
-            </Card>
+            <div className="col-md-9 col-xl-10">
+            {isLoading 
+            ? <div className= "d-flex flex-column justify-content-center align-items-center h-100"><CircularProgress color="inherit"/></div>
+            : <React.Fragment>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+              <Card className="mt-4">
+                <h1>Warehouse Content</h1>
+                <ul>
+                  <li>Some</li>
+                  <li>Content</li>
+                </ul>
+              </Card>
+            </React.Fragment>
+            }
           </div>
-          }
         </div>
       </div>
   </React.Fragment>
