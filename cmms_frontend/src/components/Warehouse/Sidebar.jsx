@@ -11,11 +11,19 @@ import { useRouteMatch, useHistory } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
 import Filters from "./Filters";
 
-const Sidebar = () => {
+const Sidebar = ({isFetching, categories}) => {
   const { user } = useAuth();
   let { url } = useRouteMatch();
   const history = useHistory();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  const [categoryTree, setCategoryTree] = useState(categories);
+  const [isLoading, setIsLoading] = useState(isFetching);
+
+  useEffect(() => {
+    setCategoryTree(categories);
+    setIsLoading(isFetching);
+  }, [isFetching, categories]);
 
   useEffect(() => {
     window.addEventListener(

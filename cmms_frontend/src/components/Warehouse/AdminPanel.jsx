@@ -4,32 +4,23 @@ import {faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt} from "@for
 import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle, ExitButton} from '../../styleComponents';
 import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
 import {useHistory} from "react-router-dom"
-import {get} from "../../services/httpService"
 import { CircularProgress } from '@material-ui/core/'
 
-const WarehouseAdminPanel = () => {
+const WarehouseAdminPanel = ({isFetching, categories}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
   const history = useHistory()
   
-  const [categoryTree, setCategoryTree] = useState({categoryList:[]});
   const [isOpen, setIsOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
-  const [isLoading, setIsLoading] = useState(true);
+  const [categoryTree, setCategoryTree] = useState(categories);
+  const [isLoading, setIsLoading] = useState(isFetching);
 
   useEffect(() => {
-    async function fetchData() {
-      // You can await here
-      const response = await get('/categories');
-      const data = {
-        categoryList: response.data
-      }
-      setIsLoading(false)
-      setCategoryTree({...data})
-    }
-    fetchData();
-  }, [isLoading]); // Or [] if effect doesn't need props or state
+    setCategoryTree(categories);
+    setIsLoading(isFetching);
+  }, [isFetching, categories]); 
 
   const openDialog = (category, type) => {
     setDialogType(type);

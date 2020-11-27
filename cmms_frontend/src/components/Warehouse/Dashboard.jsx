@@ -1,13 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Card } from "../../styleComponents";
-import Sidebar from "./Sidebar";
+import { CircularProgress } from '@material-ui/core/'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
+import Sidebar from "./Sidebar";
 
-const Dashboard = () => {
+const Dashboard = ({isFetching, categories}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(isFetching);
+
+  useEffect(() => {
+    setIsLoading(isFetching);
+  }, [isFetching]); 
 
   return <React.Fragment>
       <div
@@ -32,8 +38,10 @@ const Dashboard = () => {
       </div>
       <div className="container-fluid">
         <div className="row warehouse-wrapper">
-          <Sidebar />
-          <div className="col-md-9 col-xl-10">
+          <Sidebar isFetching={isFetching} categories={categories}/>
+          {isLoading 
+          ? <div className= "text-center my-3"><CircularProgress color="inherit"/></div>
+          : <div className="col-md-9 col-xl-10">
             <Card className="mt-4">
               <h1>Warehouse Content</h1>
               <ul>
@@ -77,6 +85,7 @@ const Dashboard = () => {
               </ul>
             </Card>
           </div>
+          }
         </div>
       </div>
   </React.Fragment>
