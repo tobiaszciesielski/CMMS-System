@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
+import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 import Dashboard from "./Dashboard"
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import WarehouseAdminPanel from "./AdminPanel";
 
 import {get} from "../../services/httpService"

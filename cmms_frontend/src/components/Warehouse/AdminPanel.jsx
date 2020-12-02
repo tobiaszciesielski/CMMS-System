@@ -211,7 +211,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
                       subCat.children 
                       && subCat.children.map((subSubCat) => {
                         subSubCat.id = id+=1
-                        return <SubSubCategory key={subSubCat.id}>
+                        return <SubSubCategory className="mb-2" key={subSubCat.id}>
                           {subSubCat.name}
                           {renderIcon(faMinusCircle, "text-danger",  () => openDialog(subSubCat, dialogTypeEnums.delete))}
                           {renderIcon(faEdit, "text-primary", () => openDialog(subSubCat, dialogTypeEnums.edit))}

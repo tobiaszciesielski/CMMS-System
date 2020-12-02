@@ -58,10 +58,25 @@ export const SubCategories = styled.div`
   text-align: center;
 `;
 
-export const SubSubCategory = styled.h6`
+export const SubSubCategory = styled.div`
   text-align: right;
-  margin: 0px 0 20px 0;
 `
 export const ExitButton = styled.div`
   width: 100px;
+`
+
+export const SidebarCategories = styled.div`
+  color: #cccccc;
+`
+
+export const CatName = styled.span`
+  font-size: 26px;
+`
+
+export const SubCatName = styled.span`
+  font-size: 20px;
+`
+
+export const SubSubCatName = styled.span`
+  font-size: 16px;
 `

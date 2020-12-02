@@ -15,7 +15,9 @@ const Filters = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <React.Fragment>
+    <div className="border-top border-bottom border-secondary rounded mt-2">
+      <h6 className="text-secondary text-center">Filters</h6>
+
       <button
         className="btn sidebar-category nav-link py-1"
         data-toggle="collapse"
@@ -48,7 +50,7 @@ const Filters = () => {
           </button>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
