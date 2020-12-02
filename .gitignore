@@ -1,2 +1,3 @@
 cmms_frontend/node_modules
 cmms_backend/node_modules
+cmms_backend/.env
