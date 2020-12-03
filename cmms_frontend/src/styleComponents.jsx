@@ -50,27 +50,28 @@ export const CategoryTree = styled.div`
   margin: 0 auto;
 `;
 
-export const Categories = styled.div`
+export const Categories = styled.ul`
   text-align: left;
 `;
 
-export const SubCategories = styled.div`
+export const SubCategories = styled.ul`
   text-align: center;
 `;
 
-export const SubSubCategory = styled.div`
+export const SubSubCategory = styled.ul`
   text-align: right;
 `
 export const ExitButton = styled.div`
   width: 100px;
 `
 
-export const SidebarCategories = styled.div`
-  color: #cccccc;
+export const SidebarCategories = styled.ul`
+  padding-left: 0;
+  color: #999999;
 `
 
 export const CatName = styled.span`
-  font-size: 26px;
+  font-size: 24px;
 `
 
 export const SubCatName = styled.span`
@@ -79,4 +80,36 @@ export const SubCatName = styled.span`
 
 export const SubSubCatName = styled.span`
   font-size: 16px;
+`
+
+export const Menu = styled.ul`
+  list-style: none;
+  color: #dddddd;
+`
+
+export const MenuItem = styled.li`
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: -22px;
+    border-left: 1px solid #666666;
+    border-bottom: 1px solid #666666;
+    border-radius: 0 0 0 0;
+    width: 20px;
+    height: 15px;
+  }
+  
+  &:not(:last-child):after {
+    position: absolute;
+    content: "";
+    top: 16px;
+    left: -22px;
+    border-left: 1px solid #666666;
+    border-top: 1px solid #666666;
+    border-radius: 0 0 0 0;
+    width: 20px;
+    height: 100%;
+  }
 `
