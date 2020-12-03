@@ -47,27 +47,11 @@ export const CategoryTitle = styled.div`
 
 export const CategoryTree = styled.div`
   max-width: 400px;
-  margin: 0 auto;
+  margin: auto;
 `;
 
-export const Categories = styled.ul`
-  text-align: left;
-`;
-
-export const SubCategories = styled.ul`
-  text-align: center;
-`;
-
-export const SubSubCategory = styled.ul`
-  text-align: right;
-`
 export const ExitButton = styled.div`
   width: 100px;
-`
-
-export const SidebarCategories = styled.ul`
-  padding-left: 0;
-  color: #999999;
 `
 
 export const CatName = styled.span`
@@ -82,9 +66,12 @@ export const SubSubCatName = styled.span`
   font-size: 16px;
 `
 
+export const SidebarCategories = styled.div`
+  color: #dddddd;
+`
+
 export const Menu = styled.ul`
   list-style: none;
-  color: #dddddd;
 `
 
 export const MenuItem = styled.li`

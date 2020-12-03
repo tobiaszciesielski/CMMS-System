@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import {Categories as Cats, MenuItem, Menu, SubCategories, SubSubCategory, SidebarCategories, CatName, SubCatName, SubSubCatName} from "../../styleComponents"
+import { CircularProgress } from "@material-ui/core";
+import {MenuItem, Menu, SidebarCategories, CatName, SubCatName, SubSubCatName} from "../../styleComponents"
 
 const data = {
   categoryList: [
@@ -108,31 +109,31 @@ const data = {
 }
 
 const Categories = ({isFetching, categories}) => {
-  const [categoryTree, setCategoryTree] = useState(categories);
-
-  useEffect(() => {
-    setCategoryTree(data);
-  }, [isFetching]);
-
 
   const handleSelect = (name) => {
     console.log(name)
   }
 
   return (
-    <div className="border-top border-bottom border-secondary rounded my-3 pb-2 d-block">
+    <SidebarCategories className="border-top border-bottom border-secondary rounded my-3 d-block">
       <h6 className="text-secondary text-center mx-auto">Categories</h6>
-      {data.categoryList.length && <Menu className="pl-0 pl-xl-2">
-        {data.categoryList.map((cat) => <li className="pl-0 pl-lg-1">
-          <CatName onClick={handleSelect(cat)}>{cat.name}</CatName>
+      {categories.categoryList.length == 0 
+      ? <div className= "text-center my-3"><CircularProgress style={{color: "#dddddd"}} size={25}/></div>
+      : <Menu className="pl-0 pl-xl-2">
+        {categories.categoryList.map((cat) => <li key={cat.id} className="pl-0 pl-lg-1">
+          <CatName className="pointer" onClick={() => handleSelect(cat)}>{cat.name}</CatName>
           {
             cat.children && <Menu className="pl-4">
-              {cat.children.map((subCat) => <MenuItem>
-                <SubCatName onClick={handleSelect(subCat)}>{subCat.name}</SubCatName>
+              {cat.children.map((subCat) => <MenuItem key={subCat.id}>
+                <SubCatName className="pointer" onClick={() => handleSelect(subCat)}>
+                  {subCat.name}
+                </SubCatName>
                 {
                   subCat.children && <Menu className="pl-4">
-                    {subCat.children.map((subSubCat) => <MenuItem className="pt-1">
-                        <SubSubCatName onClick={handleSelect(subSubCat)}>{subSubCat.name}</SubSubCatName>
+                    {subCat.children.map((subSubCat) => <MenuItem key={subSubCat.id} className="pt-1">
+                        <SubSubCatName className="pointer" onClick={() => handleSelect(subSubCat)}>
+                          {subSubCat.name}
+                        </SubSubCatName>
                       </MenuItem>  
                     )}
                   </Menu> 
@@ -143,56 +144,8 @@ const Categories = ({isFetching, categories}) => {
           }
         </li>)}
       </Menu>}
-    </div>
+    </SidebarCategories>
   );
 };
 
 export default Categories;
-
-// /*%/* BORDERS AND BULLETS */
-
-// p {
-//   /*CSS reset*/
-//   margin-bottom: 0;
-// }
-
-// ul.experiences li {
-//   position: relative;
-//   /* so that pseudoelements are positioned relatively to their "li"s*/
-//   /* use padding-bottom instead of margin-bottom.*/
-//   margin-bottom: 0;
-//   /* This overrides previously specified margin-bottom */
-//   padding-bottom: 2.5em;
-// }
-
-// ul.experiences li:after {
-//   /* bullets */
-//   content: url('http://upload.wikimedia.org/wikipedia/commons/thumb/3/30/RedDisc.svg/20px-RedDisc.svg.png');
-//   position: absolute;
-//   left: -26px;
-//   /*adjust manually*/
-//   top: 0px;
-// }
-
-// ul.experiences li:before {
-//   /* lines */
-//   content: "";
-//   position: absolute;
-//   left: -16px;
-//   /* adjust manually */
-//   border-left: 1px solid black;
-//   height: 100%;
-//   width: 1px;
-// }
-
-// ul.experiences li:first-child:before {
-//   /* first li's line */
-//   top: 6px;
-//   /* moves the line down so that it disappears under the bullet. Adjust manually */
-// }
-
-// ul.experiences li:last-child:before {
-//   /* last li's line */
-//   height: 6px;
-//   /* shorten the line so it goes only up to the bullet. Is equal to first-child:before's top */
-// }

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import {Card, CategoryTree, Categories, SubCategories, SubSubCategory, CategoryTitle, ExitButton} from '../../styleComponents';
+import {Card, CategoryTree, CatName, SubCatName, SubSubCatName, CategoryTitle, ExitButton} from '../../styleComponents';
 import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
 import {useHistory} from "react-router-dom"
 import { CircularProgress } from '@material-ui/core/'
+import { MenuItem } from './../../styleComponents';
 
 const WarehouseAdminPanel = ({isFetching, categories}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
@@ -16,6 +17,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
   const [categoryTree, setCategoryTree] = useState(categories);
   const [isLoading, setIsLoading] = useState(isFetching);
+  const [highestId, setHighestId] = useState(0);
 
   useEffect(() => {
     setCategoryTree(categories);
@@ -58,11 +60,12 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
 
   const modifyNodeInTree = (category, action) => {
     let tmpTree = categoryTree;
-
+    console.log(highestId)
     // this case is for adding new category to the category structure.
     if (category.id === undefined) {
       let tmpCategory = {
-        name: categoryName, 
+        name: categoryName,
+        id: highestId,
         children: []
       }
       tmpTree.categoryList.push(tmpCategory)
@@ -73,7 +76,9 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
         findNested(tmpTree.categoryList[i], tmpTree.categoryList, category.id, i, action); // ID is string like «30»
       }
     }
+    setHighestId(highestId+1)
     setCategoryTree({...tmpTree});
+    console.log(tmpTree);
   }
 
   const findNested =  (obj, parent, value, i, action) => {
@@ -188,45 +193,61 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
   }
 
   const renderCategoryTree = () => {
-    let id = 0;
-    return <CategoryTree>
-      {categoryTree.categoryList.map((cat) => {
-        cat.id = id+=1;
-          return(
-            <Categories key={cat.id}>
-              <div className="d-inline-block mb-3">
-                <span className='h4'>{cat.name}</span>
-                {renderFullSetOfIcons(cat)}
-              </div>
+    return (
+      <CategoryTree>
+        {categoryTree.categoryList.length == 0 
+        ? <div className= "text-center my-3"><CircularProgress style={{color: "#dddddd"}} size={25}/></div>
+        : <ul className="list-unstyled d-flex flex-column justify-content-center pl-0 pl-sm-5">
+          {
+            categoryTree.categoryList.map((cat) => {
+              if(!cat.id) {
+                  cat.id = highestId
+                } else if(cat.id > highestId) {
+                  setHighestId(cat.id);
+                }
+              return <ul key={cat.id} className="pl-0 pl-md-3">
+              <CatName>{cat.name}</CatName>
+              {renderFullSetOfIcons(cat)}
               {
-                cat.children 
-                && cat.children.map((subCat) => {
-                  subCat.id = id+=1;
-                  return <SubCategories key={subCat.id}>
-                    <div className="d-inline-block mb-3 ">
-                      <span className='h5'>{subCat.name}</span>
-                      {renderFullSetOfIcons(subCat)}
-                    </div>
-                    {
-                      subCat.children 
-                      && subCat.children.map((subSubCat) => {
-                        subSubCat.id = id+=1
-                        return <SubSubCategory className="mb-2" key={subSubCat.id}>
-                          {subSubCat.name}
-                          {renderIcon(faMinusCircle, "text-danger",  () => openDialog(subSubCat, dialogTypeEnums.delete))}
-                          {renderIcon(faEdit, "text-primary", () => openDialog(subSubCat, dialogTypeEnums.edit))}
-                        </SubSubCategory>
-                      })
+                cat.children && <ul className="pl-5 mt-3 list-unstyled">
+                  {cat.children.map((subCat) => {
+                    if(!subCat.id) {
+                      subCat.id = highestId
+                    } else if(subCat.id > highestId) {
+                        setHighestId(subCat.id);
                     }
-                  </SubCategories>   
-                })
+                    return <MenuItem key={subCat.id}>
+                    <SubCatName>{subCat.name}</SubCatName>
+                    {renderFullSetOfIcons(cat)}
+                    {
+                      subCat.children && <ul className="pl-5 py-3 list-unstyled">
+                        {subCat.children.map((subSubCat) => 
+                        {
+                          if(!subSubCat.id) {
+                            subSubCat.id = highestId
+                          } else if(subSubCat.id > highestId) {
+                              setHighestId(subSubCat.id);
+                          }
+                          return <MenuItem key={subSubCat.id} className="py-1">
+                            <SubSubCatName>
+                              {subSubCat.name}
+                            </SubSubCatName>
+                            {renderIcon(faMinusCircle, "text-danger",  () => openDialog(subSubCat, dialogTypeEnums.delete))}
+                            {renderIcon(faEdit, "text-primary", () => openDialog(subSubCat, dialogTypeEnums.edit))}
+                          </MenuItem>}
+                        )}
+                      </ul> 
+                    }
+                    </MenuItem>}  
+                  )}
+                </ul> 
               }
-            </Categories>
-          )
-        }
-      )}
-    </CategoryTree>
-  };
+            </ul>})
+          }
+        </ul>}
+      </CategoryTree>
+    )
+  }
 
   const renderAddButton = () => {
     const isDisabled = isLoading ? "disabled" : ""
