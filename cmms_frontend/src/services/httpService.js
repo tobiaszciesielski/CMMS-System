@@ -3,7 +3,13 @@ import { BASE_URL } from "../config.json";
 
 export async function post(path, request) {
   if (!request) request = {};
-  const response = await Axios.post(`${BASE_URL}${path}`, request);
+  console.log(request)
+  let config = {
+    headers: {
+      "x-auth-token": localStorage.getItem("x-auth-token")
+    }
+  }
+  const response = await Axios.post(`${BASE_URL}${path}`, request, config);
   return response;
 }
 

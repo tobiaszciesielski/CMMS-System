@@ -6,11 +6,13 @@ import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} fr
 import {useHistory} from "react-router-dom"
 import { CircularProgress } from '@material-ui/core/'
 import { MenuItem } from './../../styleComponents';
+import { post } from "../../services/httpService";
 
 const WarehouseAdminPanel = ({isFetching, categories}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
   const history = useHistory()
   
+  const [isChaged, setIsChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
@@ -59,16 +61,20 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
   }
 
   const modifyNodeInTree = (category, action) => {
+    setIsChanged(true);
     let tmpTree = categoryTree;
-    console.log(highestId)
+    let tmpId = highestId;
+    
     // this case is for adding new category to the category structure.
     if (category.id === undefined) {
+      tmpId+=1
       let tmpCategory = {
         name: categoryName,
-        id: highestId,
+        id: tmpId,
         children: []
       }
       tmpTree.categoryList.push(tmpCategory)
+      setHighestId(tmpId);
 
     // this case is for adding new children nodes to existing categories
     } else { 
@@ -76,9 +82,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
         findNested(tmpTree.categoryList[i], tmpTree.categoryList, category.id, i, action); // ID is string like «30»
       }
     }
-    setHighestId(highestId+1)
     setCategoryTree({...tmpTree});
-    console.log(tmpTree);
   }
 
   const findNested =  (obj, parent, value, i, action) => {
@@ -95,11 +99,13 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
       case dialogTypeEnums.edit:
         if (obj.id === value) {
           obj.name = categoryName;
+          break;
         }
         break;
       case dialogTypeEnums.delete:
         if (obj.id === value) {
           parent.splice(i, 1);
+          break;
         }
         break;
       default: break;
@@ -115,7 +121,6 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
   const renderDialog = () => {
     let dialogTitle, buttonText, handler;
     switch (dialogType){
-
       case dialogTypeEnums.add: 
         dialogTitle = `Insert new category into "${selectedCategory.name}"`;
         buttonText = "Insert"
@@ -123,7 +128,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
         break;
       case dialogTypeEnums.edit: 
         dialogTitle = "Edit category name";
-        buttonText = "Save"
+        buttonText = "Edit"
         handler = handleEdit;
         break;
       case dialogTypeEnums.delete:
@@ -180,6 +185,23 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
     </CategoryTitle>
   };
 
+  const renderAddButton = () => {
+    const isDisabled = isLoading ? "disabled" : ""
+    return <div className={`d-inline btn btn-primary mx-2 ${isDisabled}`}
+        onClick={isLoading ? null : () => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
+        New category
+      </div>
+  };
+
+  const renderSaveButton = () => {
+    const isDisabled = isLoading || !isChaged ? "disabled" : ""
+    
+    return <div className={`d-inline btn btn-success mx-2 ${isDisabled}`}
+        onClick={isLoading || !isChaged ? null : () => post("/categories", categoryTree)}>
+        Save change
+      </div>
+  }
+
   const renderIcon = (icon, color, callback) => {
     return <FontAwesomeIcon className={'pointer ml-3 action-icon ' + color} icon={icon} onClick={callback}/>
   }
@@ -201,7 +223,8 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
           {
             categoryTree.categoryList.map((cat) => {
               if(!cat.id) {
-                  cat.id = highestId
+                  cat.id = highestId+1
+                  setHighestId(highestId+1)
                 } else if(cat.id > highestId) {
                   setHighestId(cat.id);
                 }
@@ -212,19 +235,21 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
                 cat.children && <ul className="pl-5 mt-3 list-unstyled">
                   {cat.children.map((subCat) => {
                     if(!subCat.id) {
-                      subCat.id = highestId
+                      subCat.id = highestId+1
+                      setHighestId(highestId+1)
                     } else if(subCat.id > highestId) {
-                        setHighestId(subCat.id);
+                      setHighestId(subCat.id);
                     }
                     return <MenuItem key={subCat.id}>
                     <SubCatName>{subCat.name}</SubCatName>
-                    {renderFullSetOfIcons(cat)}
+                    {renderFullSetOfIcons(subCat)}
                     {
                       subCat.children && <ul className="pl-5 py-3 list-unstyled">
                         {subCat.children.map((subSubCat) => 
                         {
                           if(!subSubCat.id) {
-                            subSubCat.id = highestId
+                            subSubCat.id = highestId+1
+                            setHighestId(highestId+1)
                           } else if(subSubCat.id > highestId) {
                               setHighestId(subSubCat.id);
                           }
@@ -249,25 +274,18 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
     )
   }
 
-  const renderAddButton = () => {
-    const isDisabled = isLoading ? "disabled" : ""
-    return <div className="text-center">
-      <div className={`btn btn-primary btn-small mt-4 ${isDisabled}`}
-        onClick={isLoading ? null : () => openDialog({name: "category structure"}, dialogTypeEnums.add)}>
-        New category
-      </div>
-    </div>
-  };
-
   return <div className="container">
     <Card className="mt-4 mx-auto position-relative">
       {renderDialog()}
       {renderExitButton()}
       {renderTitle()}
+      <div className="text-center mb-3">
+        {renderSaveButton()}
+        {renderAddButton()}
+      </div>
       {isLoading 
         ? <div className= "text-center my-3"><CircularProgress color="inherit"/></div>
         : renderCategoryTree()}
-      {renderAddButton()}
     </Card>
   </div>
 };
