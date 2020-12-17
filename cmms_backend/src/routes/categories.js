@@ -1,9 +1,12 @@
 const express = require("express")
-const jwt = require("jsonwebtoken")
-const { jwtPrivateKey } = require("../config")
 const router = express.Router()
 
+const jwt = require("jsonwebtoken")
+const config = require("../config")
+const { jwtPrivateKey } = require("../config")
+
 const CategoriesDao = require("../database/dao/CategoriesDao")
+const UsersDao = require("../database/dao/UsersDao")
 
 router.get("/", async (req, res) => {
   console.log("get /categories", req.body)
@@ -17,14 +20,26 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-  console.log("get /categories", req.body, req.header("x-auth-token"))
+  console.log("post /categories", req.body, req.header("x-auth-token"))
   try {
-    let token = req.header("x-auth-token")
+    let token = req.headers["x-auth-token"]
+
     if (!token) 
       return res.status(401).send('Status 401: Unauthorized')
     
-    res.status(200).send(jwt.verify(token, jwtPrivateKey))
-
+    await jwt.verify(token, config.jwtPrivateKey, async (error, user) => {
+      if (error) {
+        res.status(401).send("Status 401: Token invalid")
+      } else {
+        let { Role } = await UsersDao.findById(user.userId)
+        if (Role.roleName !== user.role) 
+          return res.status(403).send("Status 403: Forbidden")  
+        if (!req.body.categoryList)      
+          return res.status(400).send("Status 400: Bad request")  
+        await CategoriesDao.setCategoriesTree(req.body)
+        return res.status(200).send("Categories changed properly")
+      }
+    })
   } catch (err) {
     console.log(err)
     res.status(500).send(err.message)

@@ -217,9 +217,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
   const renderCategoryTree = () => {
     return (
       <CategoryTree>
-        {categoryTree.categoryList.length == 0 
-        ? <div className= "text-center my-3"><CircularProgress style={{color: "#dddddd"}} size={25}/></div>
-        : <ul className="list-unstyled d-flex flex-column justify-content-center pl-0 pl-sm-5">
+        <ul className="list-unstyled d-flex flex-column justify-content-center pl-0 pl-sm-5">
           {
             categoryTree.categoryList.map((cat) => {
               if(!cat.id) {
@@ -269,7 +267,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
               }
             </ul>})
           }
-        </ul>}
+        </ul>
       </CategoryTree>
     )
   }

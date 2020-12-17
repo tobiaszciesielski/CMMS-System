@@ -9,7 +9,15 @@ const findByLogin = async (userLogin) => {
     },
     include: Roles,
     nest: true,
-    raw: true
+    raw: true,
+  })
+} 
+
+const findById = async (userId) => {
+  return Users.findByPk(userId, {
+    include: Roles,
+    nest: true,
+    raw: true,
   })
 } 
 
@@ -23,5 +31,6 @@ const updateLastSession = async (id) => {
 
 module.exports = {
   findByLogin,
-  updateLastSession
+  findById,
+  updateLastSession,
 }

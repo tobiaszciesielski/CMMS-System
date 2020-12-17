@@ -1,7 +1,6 @@
 const db = require("../db")
-const categories = require("../models/categories")
 
-const {Categories, SubCategories, SubSubCategories} = db.models
+const {Categories, SubCategories, SubSubCategories, Items, PropertiesValues, Rentals} = db.models
 
 const getCategoriesTree = async () => {
   return Categories.findAll({
@@ -41,7 +40,45 @@ const getCategoriesTree = async () => {
     return res
   })
 } 
+ 
+const setCategoriesTree = async (categoryTree) => {
+  let categoryList = categoryTree.categoryList 
+  for (let i = 0; i < categoryList.length; i++) {
+    category = categoryList[i]
+    await Categories.upsert({
+      categoryId: category.id,
+      categoryName: category.name,
+    })
+    for (let j = 0; j < category.children.length; j++) {
+      subCategory = category.children[j]
+      await SubCategories.upsert({
+        subCategoryId: subCategory.id,
+        subCategoryName: subCategory.name,
+        categoryId: category.id,
+      })
+      for (let k = 0; k < subCategory.children.length; k++) {
+        subSubCategory = subCategory.children[k]
+        if(subSubCategory) {
+          console.log(subCategory.id, subSubCategory.id)
+          await SubSubCategories.upsert({
+            subSubCategoryId: subSubCategory.id,
+            subSubCategoryName: subSubCategory.name,
+            subCategoryId: subCategory.id,
+          })
+        }
+      }
+    }
+  }
+
+  // await Rentals.destroy({where:{}})
+  // await PropertiesValues.destroy({where:{}})
+  // await Items.destroy({where:{}})
+  // await SubSubCategories.destroy({where:{}})
+  // await SubCategories.destroy({where:{}})
+  // await Categories.destroy({where:{}})
+}
 
 module.exports = {
-  getCategoriesTree
+  setCategoriesTree,
+  getCategoriesTree,
 }

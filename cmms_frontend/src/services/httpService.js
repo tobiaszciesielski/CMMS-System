@@ -6,7 +6,7 @@ export async function post(path, request) {
   console.log(request)
   let config = {
     headers: {
-      "x-auth-token": localStorage.getItem("x-auth-token")
+      "x-auth-token": localStorage.getItem("x-auth-token")  
     }
   }
   const response = await Axios.post(`${BASE_URL}${path}`, request, config);
