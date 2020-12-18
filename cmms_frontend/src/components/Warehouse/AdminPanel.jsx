@@ -8,21 +8,23 @@ import { CircularProgress } from '@material-ui/core/'
 import { MenuItem } from './../../styleComponents';
 import { post } from "../../services/httpService";
 
-const WarehouseAdminPanel = ({isFetching, categories}) => {
+const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
   const history = useHistory()
   
+  const [saveInfo, setSaveInfo] = useState("")
+  const [isSubmiting, setIsSubmiting] = useState(false)
   const [isChaged, setIsChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState({name:''});
   const [dialogType, setDialogType] = useState(dialogTypeEnums.add);
-  const [categoryTree, setCategoryTree] = useState(categories);
+  const [categoryTree, setCategoryTree] = useState({categoryList:[]});
   const [isLoading, setIsLoading] = useState(isFetching);
   const [highestId, setHighestId] = useState(0);
-
+  
   useEffect(() => {
-    setCategoryTree(categories);
+    setCategoryTree(JSON.parse(JSON.stringify(categories)));
     setIsLoading(isFetching);
   }, [isFetching, categories]); 
 
@@ -118,6 +120,21 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
     }
   }
 
+  const checkIsCompletedTree = () => {
+    let categoryList = categoryTree.categoryList
+    
+    for (let i = 0; i < categoryList.length; i++) {
+      let category = categoryList[i]
+      if (category.children.length === 0) return false
+
+      for (let j = 0; j < category.children.length; j++) {
+        let subCategory = category.children[j]
+        if (subCategory.children.length === 0) return false
+      }
+    }
+    return true
+  }
+
   const renderDialog = () => {
     let dialogTitle, buttonText, handler;
     switch (dialogType){
@@ -193,12 +210,54 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
       </div>
   };
 
-  const renderSaveButton = () => {
-    const isDisabled = isLoading || !isChaged ? "disabled" : ""
+  const handleOnSave = async () => {
+    let completed = checkIsCompletedTree();
+    setIsSubmiting(true)
+    let info = "";
+    await (async () => {
+      if (completed) { 
+        try {
+          const res = await post("/categories", categoryTree);
+          console.log(res)
+          info = res.data
+          updateHandler(categoryTree)
+        } catch (ex) {
+          if (ex.response) {
+            info = ex.response.data;
+          } else if (ex.request) {
+            info = "Server is not responding!";
+          } else {
+            info = ex.message;
+          }
+        }
+      } else {
+        info = "All categories must have third level of nesting!"
+      }
+    })()
     
+    setSaveInfo(info)
+    setIsChanged(false);
+    setIsSubmiting(false)
+  }
+
+  const renderSaveInformation = () => {
+    return saveInfo !== "" 
+    ? <div className="d-flex justify-content-center">
+        <div className="alert alert-primary mt-2" style={{maxWidth: 300}}>
+          {saveInfo}
+        </div> 
+     </div>
+    : null
+  }
+
+  const renderSaveButton = () => {
+    const isDisabled = isLoading || !isChaged || isSubmiting ? "disabled" : ""
     return <div className={`d-inline btn btn-success mx-2 ${isDisabled}`}
-        onClick={isLoading || !isChaged ? null : () => post("/categories", categoryTree)}>
-        Save change
+        onClick={isLoading || !isChaged ? null : handleOnSave }>
+    {isSubmiting 
+    ? <CircularProgress color="inherit" size="24px"/>
+    : "Save change"
+    }
       </div>
   }
 
@@ -238,10 +297,13 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
                     } else if(subCat.id > highestId) {
                       setHighestId(subCat.id);
                     }
+
                     return <MenuItem key={subCat.id}>
                     <SubCatName>{subCat.name}</SubCatName>
                     {renderFullSetOfIcons(subCat)}
                     {
+                      
+                       // tree must have 3 levels of nesting
                       subCat.children && <ul className="pl-5 py-3 list-unstyled">
                         {subCat.children.map((subSubCat) => 
                         {
@@ -249,7 +311,7 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
                             subSubCat.id = highestId+1
                             setHighestId(highestId+1)
                           } else if(subSubCat.id > highestId) {
-                              setHighestId(subSubCat.id);
+                            setHighestId(subSubCat.id);
                           }
                           return <MenuItem key={subSubCat.id} className="py-1">
                             <SubSubCatName>
@@ -281,8 +343,9 @@ const WarehouseAdminPanel = ({isFetching, categories}) => {
         {renderSaveButton()}
         {renderAddButton()}
       </div>
+      {renderSaveInformation()}
       {isLoading 
-        ? <div className= "text-center my-3"><CircularProgress color="inherit"/></div>
+        ? <div className= "text-center mt-5"><CircularProgress color="inherit"/></div>
         : renderCategoryTree()}
     </Card>
   </div>

@@ -3,7 +3,6 @@ const router = express.Router()
 
 const jwt = require("jsonwebtoken")
 const config = require("../config")
-const { jwtPrivateKey } = require("../config")
 
 const CategoriesDao = require("../database/dao/CategoriesDao")
 const UsersDao = require("../database/dao/UsersDao")
@@ -37,7 +36,7 @@ router.post("/", async (req, res) => {
         if (!req.body.categoryList)      
           return res.status(400).send("Status 400: Bad request")  
         await CategoriesDao.setCategoriesTree(req.body)
-        return res.status(200).send("Categories changed properly")
+        return res.status(200).send("Categories saved properly")
       }
     })
   } catch (err) {

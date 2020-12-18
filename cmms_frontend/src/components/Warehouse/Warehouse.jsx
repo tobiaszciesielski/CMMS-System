@@ -28,15 +28,24 @@ const Warehouse = () => {
     fetchData()
   }, [err]) // force useEffect again if error occures
 
+  const updateCategories = (newCategoryTree) => {
+    setCategoryTree(newCategoryTree)
+  }
+
   return (
     <Switch>
       <Route
         exact
         path={`${path}/admin`}
-        render={() => <WarehouseAdminPanel 
+        render={() => {
+
+        return <WarehouseAdminPanel 
           isFetching={isFetching} 
           categories={categoryTree}
-          />}
+          updateHandler={updateCategories}
+        />
+      }
+      }
       />
       <Route
         exact
