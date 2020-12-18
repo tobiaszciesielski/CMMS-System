@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import {Card, CategoryTree, CatName, SubCatName, SubSubCatName, CategoryTitle, ExitButton} from '../../styleComponents';
-import {Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions} from "@material-ui/core";
-import {useHistory} from "react-router-dom"
-import { CircularProgress } from '@material-ui/core/'
-import { MenuItem } from './../../styleComponents';
 import { post } from "../../services/httpService";
+
+import { faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { CircularProgress } from '@material-ui/core/'
+import { MenuItem, Card, CategoryTree, CatName, SubCatName, SubSubCatName, CategoryTitle, ExitButton } from '../../styleComponents';
+import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions } from "@material-ui/core";
 
 const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
   const history = useHistory()
   
-  const [saveInfo, setSaveInfo] = useState("")
+  const [information, setInformation] = useState("")
   const [isSubmiting, setIsSubmiting] = useState(false)
   const [isChaged, setIsChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -63,21 +63,28 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   }
 
   const modifyNodeInTree = (category, action) => {
-    setIsChanged(true);
+    setInformation("")
     let tmpTree = categoryTree;
     let tmpId = highestId;
     
     // this case is for adding new category to the category structure.
     if (category.id === undefined) {
-      tmpId+=1
-      let tmpCategory = {
-        name: categoryName,
-        id: tmpId,
-        children: []
-      }
-      tmpTree.categoryList.push(tmpCategory)
-      setHighestId(tmpId);
+      if (categoryName === "") {
+        setInformation("Name cannot be empty");
+      } else if (categoryName.length > 20) {
+        setInformation("Name too long (max 20 characters)");
+      } else {
 
+        tmpId+=1
+        let tmpCategory = {
+          name: categoryName,
+          id: tmpId,
+          children: []
+        }
+        tmpTree.categoryList.push(tmpCategory)
+        setIsChanged(true);
+        setHighestId(tmpId);
+      }
     // this case is for adding new children nodes to existing categories
     } else { 
       for (let i = 0; i < tmpTree.categoryList.length; i++) {
@@ -91,32 +98,49 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
     switch(action) {
       case dialogTypeEnums.add:
         if (obj.id === value) {
-          if (!obj.children) {
-            obj.children = [];
+          if (categoryName === "") {
+            setInformation("Name cannot be empty");
+          } else if (categoryName.length > 20) {
+            setInformation("Name too long (max 20 characters)");
+          } else {
+            setIsChanged(true);
+            if (!obj.children) {
+              obj.children = [];
+            }
+            obj.children.push({name: categoryName, children: []});
           }
-          obj.children.push({name: categoryName, children: []});
           return;
         }
         break;
-      case dialogTypeEnums.edit:
-        if (obj.id === value) {
-          obj.name = categoryName;
-          break;
+        case dialogTypeEnums.edit:
+          if (obj.id === value) {
+          if (obj.name === categoryName) {
+            setInformation("Names are the same")
+          } else if (categoryName === "") {
+            setInformation("Name cannot be empty");
+          } else if (categoryName.length > 20) {
+            setInformation("Name too long (max 20 characters)");
+          } else {
+            setIsChanged(true);
+            obj.name = categoryName;
+          }
+          return;
         }
         break;
       case dialogTypeEnums.delete:
+        setIsChanged(true);
         if (obj.id === value) {
           parent.splice(i, 1);
-          break;
+          return          
         }
         break;
-      default: break;
-    }
-    
-    if (obj && obj.children && obj.children.length > 0) {
-      for (let j = 0; j < obj.children.length; j++) {
-          findNested(obj.children[j], obj.children, value, j, action);
+        default: break;
       }
+      
+      if (obj && obj.children && obj.children.length > 0) {
+        for (let j = 0; j < obj.children.length; j++) {
+          findNested(obj.children[j], obj.children, value, j, action);
+        }
     }
   }
 
@@ -235,16 +259,16 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
       }
     })()
     
-    setSaveInfo(info)
+    setInformation(info)
     setIsChanged(false);
     setIsSubmiting(false)
   }
 
-  const renderSaveInformation = () => {
-    return saveInfo !== "" 
+  const renderinformationrmation = () => {
+    return information !== "" 
     ? <div className="d-flex justify-content-center">
         <div className="alert alert-primary mt-2" style={{maxWidth: 300}}>
-          {saveInfo}
+          {information}
         </div> 
      </div>
     : null
@@ -343,7 +367,7 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
         {renderSaveButton()}
         {renderAddButton()}
       </div>
-      {renderSaveInformation()}
+      {renderinformationrmation()}
       {isLoading 
         ? <div className= "text-center mt-5"><CircularProgress color="inherit"/></div>
         : renderCategoryTree()}
