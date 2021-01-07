@@ -71,9 +71,6 @@ code {
 
 @media screen and (max-width: 767px) {
   /* Centering navbar items when collapse */
-  .navbar .navbar-collapse {
-    text-align: center;
-  }
 
   .dropdown-menu {
     text-align: center;
@@ -87,8 +84,6 @@ code {
   .sidebar {
     display: flex;
     flex-direction: column;
-    display: flex;
     align-items: center;
-    text-align: center;
   }
 }

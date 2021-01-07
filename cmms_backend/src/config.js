@@ -11,6 +11,7 @@ const {
   SQL_DATABASE,
   SQL_SERVER,
   SQL_USER,
+  SQL_PORT,
 } = process.env;
 
 const sqlEncript = process.env.SQL_ENCRYPT === "true";
@@ -29,6 +30,7 @@ module.exports = {
     database: SQL_DATABASE,
     password: SQL_PASSWORD,
     username: SQL_USER,
+    port: SQL_PORT,
     dialectOptions: {
       options: {
       validateBulkLoadParameters: true

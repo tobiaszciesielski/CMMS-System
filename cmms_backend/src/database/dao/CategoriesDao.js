@@ -40,7 +40,7 @@ const getCategoriesTree = async () => {
     return res
   })
 } 
- 
+
 const setCategoriesTree = async (categoryTree) => {
   let categoryList = categoryTree.categoryList 
   for (let i = 0; i < categoryList.length; i++) {
@@ -59,7 +59,6 @@ const setCategoriesTree = async (categoryTree) => {
       for (let k = 0; k < subCategory.children.length; k++) {
         subSubCategory = subCategory.children[k]
         if(subSubCategory) {
-          console.log(subCategory.id, subSubCategory.id)
           await SubSubCategories.upsert({
             subSubCategoryId: subSubCategory.id,
             subSubCategoryName: subSubCategory.name,
