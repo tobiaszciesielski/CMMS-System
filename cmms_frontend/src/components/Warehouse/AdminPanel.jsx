@@ -22,6 +22,7 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   const [categoryTree, setCategoryTree] = useState({categoryList:[]});
   const [isLoading, setIsLoading] = useState(isFetching);
   const [highestId, setHighestId] = useState(0);
+  const [nodesToDelete, setNodesToDelete] = useState([])
   
   useEffect(() => {
     setCategoryTree(JSON.parse(JSON.stringify(categories)));
@@ -131,6 +132,9 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
         setIsChanged(true);
         if (obj.id === value) {
           parent.splice(i, 1);
+          let tmpNodesToDel = nodesToDelete
+          tmpNodesToDel.push(obj.id)
+          setNodesToDelete(tmpNodesToDel)
           return          
         }
         break;
@@ -241,6 +245,7 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
     await (async () => {
       if (completed) { 
         try {
+          console.log(nodesToDelete)
           const res = await post("/categories", categoryTree);
           console.log(res)
           info = res.data

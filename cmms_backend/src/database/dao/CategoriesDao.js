@@ -43,6 +43,7 @@ const getCategoriesTree = async () => {
 
 const setCategoriesTree = async (categoryTree) => {
   let categoryList = categoryTree.categoryList 
+
   for (let i = 0; i < categoryList.length; i++) {
     category = categoryList[i]
     await Categories.upsert({
@@ -68,6 +69,9 @@ const setCategoriesTree = async (categoryTree) => {
       }
     }
   }
+  
+  console.log(123)
+  await Categories.destroy({where: {categoryId: 4}})
 
   // await Rentals.destroy({where:{}})
   // await PropertiesValues.destroy({where:{}})

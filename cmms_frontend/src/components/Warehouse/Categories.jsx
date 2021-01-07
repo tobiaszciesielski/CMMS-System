@@ -16,7 +16,7 @@ const Categories = ({ categories, isFetching }) => {
       {
         isFetching ? <div style={{textAlign: "center", padding: "10px 0 10px 0"}}><CircularProgress style={{color: "#dddddd"}} size={25}/></div> : (
 
-        categories.categoryList.length == 0 
+        categories.categoryList.length === 0 
         ? <div className= "text-center my-3">No category found.</div>
         : <Menu className="pl-0 pl-xl-2">
           {categories.categoryList.map((cat) => <li key={cat.id} className="pl-0 pl-lg-1">
