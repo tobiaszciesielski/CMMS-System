@@ -1,16 +1,16 @@
 var DataTypes = require("sequelize").DataTypes;
-var _Categories = require("./categories");
-var _Items = require("./items");
-var _Producers = require("./producers");
-var _Properties = require("./properties");
-var _PropertiesValues = require("./propertiesValues");
-var _Rentals = require("./rentals");
-var _Roles = require("./roles");
-var _StoringLocations = require("./storingLocations");
-var _SubCategories = require("./subCategories");
-var _SubSubCategories = require("./subSubCategories");
-var _Users = require("./users");
-var _Values = require("./values");
+var _Categories = require("./Categories");
+var _Items = require("./Items");
+var _Producers = require("./Producers");
+var _Properties = require("./Properties");
+var _PropertiesValues = require("./PropertiesValues");
+var _Rentals = require("./Rentals");
+var _Roles = require("./Roles");
+var _StoringLocations = require("./StoringLocations");
+var _SubCategories = require("./SubCategories");
+var _SubSubCategories = require("./SubSubCategories");
+var _Users = require("./Users");
+var _Values = require("./Values");
 
 function initModels(sequelize) {
   var Categories = _Categories(sequelize, DataTypes);
