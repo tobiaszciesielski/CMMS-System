@@ -31,11 +31,11 @@ router.post("/", async (req, res) => {
         res.status(401).send("Status 401: Token invalid")
       } else {
         let { Role } = await UsersDao.findById(user.userId)
-        if (Role.roleName !== user.role) 
+        if (Role.roleName !== user.role || Role.roleName !== "admin") 
           return res.status(403).send("Status 403: Forbidden")  
-          let {categoryTree, nodesToDelete} = req.body 
-          if (!categoryTree || !nodesToDelete)      
-            return res.status(400).send("Status 400: Bad request")  
+        let {categoryTree, nodesToDelete} = req.body 
+        if (!categoryTree || !nodesToDelete)      
+          return res.status(400).send("Status 400: Bad request")  
         await CategoriesDao.setCategoriesTree(categoryTree, nodesToDelete)
         return res.status(200).send("Categories saved properly")
       }

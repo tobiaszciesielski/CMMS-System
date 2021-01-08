@@ -5,14 +5,26 @@ import { useAuth } from "../context/AuthProvider";
 
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { faColumns, faUserShield } from "@fortawesome/free-solid-svg-icons";
+import { faColumns, faUserEdit, faUser, faUserCog } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
 
   const renderUserIcon = () => {
-    const userIcon = user.role === "admin" ? faUserShield : faUser;
+    let userIcon = null
+    switch (user.role) {
+      case "admin":
+        userIcon = faUserCog 
+        break;
+
+      case "moderator" : 
+        userIcon = faUserEdit
+        break;
+
+      case "user":
+          userIcon = faUser
+          break;
+    }
     return <FontAwesomeIcon className="ml-2" icon={userIcon} />;
   };
 

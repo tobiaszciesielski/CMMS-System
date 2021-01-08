@@ -66,7 +66,7 @@ const setCategoriesTree = async (categoryTree, nodesToDelete) => {
       }
     }
   }
-
+  
   let categoryList = categoryTree.categoryList 
   for (let i = 0; i < categoryList.length; i++) {
     category = categoryList[i]

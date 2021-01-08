@@ -5,7 +5,7 @@ import Categories from "./Categories";
 // icons
 import "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTools } from "@fortawesome/free-solid-svg-icons";
+import { faTools, faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { useRouteMatch, useHistory } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
@@ -37,13 +37,24 @@ const Sidebar = ({isFetching, categories}) => {
       }
       aria-expanded={false}
     >
+      {(user.role === "admin" || user.role === "moderator") && (
+        <button
+          onClick={() => history.push(`${url}/add`)}
+          className="btn btn-block btn-success d-inline mt-3"
+        >
+          <h5 className="pt-1">
+            <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
+            Add new item
+          </h5>
+        </button>
+      )}
       {user.role === "admin" && (
         <button
           onClick={() => history.push(`${url}/admin`)}
           className="btn btn-block btn-outline-warning d-inline mt-3"
         >
           <h5 className="pt-1">
-            Edit
+            Edit Categories
             <FontAwesomeIcon icon={faTools} className="ml-2" />
           </h5>
         </button>

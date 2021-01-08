@@ -5,12 +5,15 @@ import Dashboard from "./Dashboard"
 import WarehouseAdminPanel from "./AdminPanel";
 
 import {get} from "../../services/httpService"
+import ProtectedRoute from './../common/ProtectedRoute';
+import ItemInsertPanel from './ItemInsertPanel'
 
 const Warehouse = () => {
   let { path } = useRouteMatch();
   const [categoryTree, setCategoryTree] = useState({categoryList:[]});
   const [isFetching, setIsFetching] = useState(true);
   const [err, setErr] = useState("")
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -34,18 +37,30 @@ const Warehouse = () => {
 
   return (
     <Switch>
-      <Route
+      <ProtectedRoute
+        exact
+        path={`${path}/add`}
+        redirect={`${path}`}
+        privilegedRoles={["admin", "moderator"]}
+        render={() => {
+          return <ItemInsertPanel 
+            isFetching={isFetching} 
+            categories={categoryTree}
+          />
+        }}
+      />
+      <ProtectedRoute
         exact
         path={`${path}/admin`}
+        redirect={`${path}`}
+        privilegedRoles={["admin"]}
         render={() => {
-
-        return <WarehouseAdminPanel 
-          isFetching={isFetching} 
-          categories={categoryTree}
-          updateHandler={updateCategories}
-        />
-      }
-      }
+          return <WarehouseAdminPanel 
+            isFetching={isFetching} 
+            categories={categoryTree}
+            updateHandler={updateCategories}
+          />
+        }}
       />
       <Route
         exact
