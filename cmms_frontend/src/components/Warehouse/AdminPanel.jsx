@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom"
+
+import ExitButton from './../common/ExitButton';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle, faMinusCircle, faSitemap, faEdit } from "@fortawesome/free-solid-svg-icons";
+
+import { CircularProgress } from '@material-ui/core/'
+import { MenuItem, Card, CategoryTree, CatName, SubCatName, SubSubCatName, CategoryTitle} from '../../styleComponents';
+import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions } from "@material-ui/core";
 import { post } from "../../services/httpService";
 
-import { faPlusCircle, faMinusCircle, faSitemap, faEdit, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import { CircularProgress } from '@material-ui/core/'
-import { MenuItem, Card, CategoryTree, CatName, SubCatName, SubSubCatName, CategoryTitle, ExitButton } from '../../styleComponents';
-import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions } from "@material-ui/core";
 
 const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   const dialogTypeEnums = Object.freeze({"add": 1, "edit": 2, "delete": 3});
-  const history = useHistory()
   
   const [information, setInformation] = useState("")
   const [isSubmiting, setIsSubmiting] = useState(false)
@@ -213,16 +215,6 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
     </Dialog>
   }
 
-  const renderExitButton = () => {
-    return <div className="text-left mb-2 m-md-0">
-      <ExitButton className="btn btn-outline-danger" onClick={() => {history.goBack()}
-      }>
-        Exit
-        <FontAwesomeIcon className="ml-2" icon={faSignOutAlt}/>
-      </ExitButton>
-    </div> 
-  }
-
   const renderTitle = () => {
     return <CategoryTitle>
     <h2>Category structure</h2>
@@ -366,7 +358,7 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
   return <div className="container">
     <Card className="mt-4 mx-auto position-relative">
       {renderDialog()}
-      {renderExitButton()}
+      <ExitButton />
       {renderTitle()}
       <div className="text-center mb-3">
         {renderSaveButton()}
