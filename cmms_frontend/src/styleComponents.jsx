@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import media from './media'
 
 // COMMON
 export const Card = styled.div`
@@ -99,4 +100,15 @@ export const MenuItem = styled.li`
     width: 20px;
     height: 100%;
   }
+`
+
+export const InputForm = styled.div`
+  h1 {
+    font-size: 24px;
+  }
+  ${media.md`
+    h1 {
+      font-size: 36px;
+    }
+  `};
 `
