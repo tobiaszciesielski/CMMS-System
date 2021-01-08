@@ -1,6 +1,6 @@
 const db = require("../db")
 
-const {Categories, SubCategories, SubSubCategories, Items, PropertiesValues, Rentals} = db.models
+const {Categories, SubCategories, SubSubCategories} = db.models
 
 const getCategoriesTree = async () => {
   return Categories.findAll({
@@ -41,9 +41,33 @@ const getCategoriesTree = async () => {
   })
 } 
 
-const setCategoriesTree = async (categoryTree) => {
-  let categoryList = categoryTree.categoryList 
+const setCategoriesTree = async (categoryTree, nodesToDelete) => { 
+ 
+  if (nodesToDelete.length > 0) {
+      let previousTree = await getCategoriesTree()
+      for (let i = 0; i < previousTree.length; i++) {
+        category = previousTree[i]
+        if (nodesToDelete.includes(category.id)) {
+          await Categories.destroy({where: {categoryId: category.id}})
+        }
+        for (let j = 0; j < category.children.length; j++) {
+        subCategory = category.children[j]
+        if (nodesToDelete.includes(subCategory.id)) {
+          await SubCategories.destroy({where: {subCategoryId: subCategory.id}})
+        }
+        for (let k = 0; k < subCategory.children.length; k++) {
+          subSubCategory = subCategory.children[k]
+          if(subSubCategory) {
+            if (nodesToDelete.includes(subSubCategory.id)) {
+              await SubSubCategories.destroy({where: {subSubCategoryId: subSubCategory.id}})
+            } 
+          }
+        }
+      }
+    }
+  }
 
+  let categoryList = categoryTree.categoryList 
   for (let i = 0; i < categoryList.length; i++) {
     category = categoryList[i]
     await Categories.upsert({
@@ -69,16 +93,6 @@ const setCategoriesTree = async (categoryTree) => {
       }
     }
   }
-  
-  console.log(123)
-  await Categories.destroy({where: {categoryId: 4}})
-
-  // await Rentals.destroy({where:{}})
-  // await PropertiesValues.destroy({where:{}})
-  // await Items.destroy({where:{}})
-  // await SubSubCategories.destroy({where:{}})
-  // await SubCategories.destroy({where:{}})
-  // await Categories.destroy({where:{}})
 }
 
 module.exports = {

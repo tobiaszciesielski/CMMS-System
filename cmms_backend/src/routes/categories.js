@@ -33,9 +33,10 @@ router.post("/", async (req, res) => {
         let { Role } = await UsersDao.findById(user.userId)
         if (Role.roleName !== user.role) 
           return res.status(403).send("Status 403: Forbidden")  
-        if (!req.body.categoryList)      
-          return res.status(400).send("Status 400: Bad request")  
-        await CategoriesDao.setCategoriesTree(req.body)
+          let {categoryTree, nodesToDelete} = req.body 
+          if (!categoryTree || !nodesToDelete)      
+            return res.status(400).send("Status 400: Bad request")  
+        await CategoriesDao.setCategoriesTree(categoryTree, nodesToDelete)
         return res.status(200).send("Categories saved properly")
       }
     })

@@ -227,6 +227,7 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
     return <CategoryTitle>
     <h2>Category structure</h2>
       <FontAwesomeIcon className="h3 mt-2" icon={faSitemap}/>
+    <p style={{color:"#e62828"}}>Deleting category that contains items will also DELETE them!</p>
     </CategoryTitle>
   };
 
@@ -245,9 +246,8 @@ const WarehouseAdminPanel = ({isFetching, categories, updateHandler}) => {
     await (async () => {
       if (completed) { 
         try {
-          console.log(nodesToDelete)
-          const res = await post("/categories", categoryTree);
-          console.log(res)
+          let request = {nodesToDelete: nodesToDelete, categoryTree: categoryTree}
+          const res = await post("/categories", request);
           info = res.data
           updateHandler(categoryTree)
         } catch (ex) {
