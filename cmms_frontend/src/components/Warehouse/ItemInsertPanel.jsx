@@ -1,52 +1,47 @@
 import React from 'react';
-import { Card, FormWrapper, InputForm } from '../../styleComponents';
+import { Card } from '../../styleComponents';
 import ExitButton from './../common/ExitButton';
-import { Form } from './../../styleComponents';
-import { Input } from './../common/Input';
-import { useState } from 'react';
+import ListInput from "../common/ListInput";
+import Input from '../common/Input';
+import { toCamelCase } from '../../utils/helpers';
 
-
-const ListInput = ({placeholder, changeHandler, list, ...rest}) => {
-
-  const [itemId, setItemId] = useState(placeholder.toLowerCase().replace(' ', '_'))
-  return <>
-    <Input
-      name={itemId} // replace 'Item Name' with 'item_name'
-      placeholder={placeholder}
-      type="text"
-      changeHandler={changeHandler}
-      list={itemId} 
-      {...rest}
-    />
-    <datalist id={itemId}>
-      {list.map((item)=><option key={item} value={item} />)}
-    </datalist>
-  </>
-}
 
 const ItemInsertPanel = ({categories, isFetching}) => {
-
-  const list = ["test", "houston", "copy"]
-  const labels = [
-    "Item Name",
-    "Serial Number",
-    "Producer",
-    "Destiny",
-    "Description",
-    "Storing Location"
-  ]
+  const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
     console.log(name, value)
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    console.log(event.target)
+  }
+
+  const renderFormField = (InputType, placeholder,  description = "", list=[]) => {
+    return <>
+      <InputType placeholder={placeholder} changeHandler={handleChange} style={styleForInput} list={list}/>
+      {description !== "" && <small id={`${toCamelCase(placeholder)}Helper`} class="form-text text-muted mt-0 mb-2">
+        {description}
+      </small>}
+    </>
+  }
+
   return <div className="container">
     <Card className="mt-4 mx-auto position-relative text-center">
       <ExitButton />
-      <form action="submit" onSubmit={(event)=>{event.preventDefault()}}>
-        {labels.map((label) => <ListInput style={{maxWidth: 200, marginTop: "5px"}} placeholder={label} list={list}/>)}
-        <button type="submit">Submit</button>
+      <h2 className="mb-4">Item Formula</h2>
+      <form className="text-center" action="submit" onSubmit={handleSubmit}>
+        {renderFormField(Input, "Item Name")}
+        {renderFormField(ListInput, "Producer", "", ['ABB', 'Simens'])}
+        {renderFormField(Input, "Serial Number")}
+        {renderFormField(ListInput, "Category", "", ['Wires', 'Engines', 'Tools'])}
+        {renderFormField(ListInput, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
+        {renderFormField(Input, "Destiny", "Where it will be used? Ex. L6")}
+        {renderFormField(Input, "Description", "Additional notes about product.")}
+        
+        <button className="btn btn-success">Add new item</button>
       </form>
     </Card>
   </div>

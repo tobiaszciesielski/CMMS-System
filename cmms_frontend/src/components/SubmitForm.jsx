@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Form, FormWrapper } from "../styleComponents"
 import { useAuth } from "../context/AuthProvider";
-import { Input } from "./common/Input";
+import Input from "./common/Input";
 
 export const SubmitForm = () => {
   const [data, setData] = useState({ login: "", password: "" });
@@ -38,10 +38,10 @@ export const SubmitForm = () => {
     [isSubmiting, data, login]
   );
 
-  const renderInput = (name, placeholder, type, isAutofocused = false) => {
+  const renderInput = (placeholder, type, isAutofocused = false) => {
     return (
       <Input
-        name={name}
+        style={{marginBottom: "10px"}}
         placeholder={placeholder}
         type={type}
         changeHandler={handleChange}
@@ -59,8 +59,8 @@ export const SubmitForm = () => {
           alt="Gestamp Logo"
         />
         <h2 className="mb-4 mt-2 text-muted">CMMS System</h2>
-        {renderInput("login", "Login", "text", true)}
-        {renderInput("password", "Password", "password")}
+        {renderInput("Login", "text", true)}
+        {renderInput("Password", "password")}
         {loginError && <div className="alert alert-danger">{loginError}</div>}
         <button
           className="btn btn-primary btn-block mt-3"

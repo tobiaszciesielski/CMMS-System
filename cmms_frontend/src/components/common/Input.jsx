@@ -1,14 +1,14 @@
 import React from "react";
+import { toCamelCase } from '../../utils/helpers'
 
-export const Input = ({ changeHandler, ...rest }) => {
-  return (
-    <div className="mb-2">
-      <input
-        onChange={changeHandler}
-        className="form-control"
-        required={true}
-        {...rest}
-      />
-    </div>
-  );
+const Input = ({ changeHandler, ...rest}) => {
+  return <input
+    onChange={changeHandler}
+    className="form-control"
+    required={true}
+    name={toCamelCase(rest.placeholder)}
+    {...rest}
+  />
 };
+
+export default Input
