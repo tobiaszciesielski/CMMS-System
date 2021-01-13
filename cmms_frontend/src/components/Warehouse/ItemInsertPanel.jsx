@@ -4,7 +4,7 @@ import ExitButton from './../common/ExitButton';
 import ListInput from "../common/ListInput";
 import Input from '../common/Input';
 import { toCamelCase } from '../../utils/helpers';
-
+import ImageUploader from 'react-images-upload'
 
 const ItemInsertPanel = ({categories, isFetching}) => {
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
@@ -31,7 +31,7 @@ const ItemInsertPanel = ({categories, isFetching}) => {
   return <div className="container">
     <Card className="mt-4 mx-auto position-relative text-center">
       <ExitButton />
-      <h2 className="mb-4">Item Formula</h2>
+      <h2 className="mb-4">New Item</h2>
       <form className="text-center" action="submit" onSubmit={handleSubmit}>
         {renderFormField(Input, "Item Name")}
         {renderFormField(ListInput, "Producer", "", ['ABB', 'Simens'])}
@@ -41,7 +41,15 @@ const ItemInsertPanel = ({categories, isFetching}) => {
         {renderFormField(Input, "Destiny", "Where it will be used? Ex. L6")}
         {renderFormField(Input, "Description", "Additional notes about product.")}
         
-        <button className="btn btn-success">Add new item</button>
+        <ImageUploader
+          style={{maxWidth: 400, margin: "20px auto"}}
+          withIcon={true}
+          buttonText='Upload image'
+          imgExtension={['.jpg', '.jpeg', '.png']}
+          maxFileSize={5242880}
+        />
+
+        <button className="btn btn-success">Insert item</button>
       </form>
     </Card>
   </div>
