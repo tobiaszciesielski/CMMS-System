@@ -1,13 +1,21 @@
 import React from 'react';
+import { useState } from 'react';
+
+import ImageUploader from 'react-images-upload'
+
 import { Card } from '../../styleComponents';
+
 import ExitButton from './../common/ExitButton';
 import ListInput from "../common/ListInput";
 import Input from '../common/Input';
+
 import { toCamelCase } from '../../utils/helpers';
-import ImageUploader from 'react-images-upload'
+
 
 const ItemInsertPanel = ({categories, isFetching}) => {
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
+
+  const [propertiesValues, setPropertiesValues] = useState([])
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -19,9 +27,9 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     console.log(event.target)
   }
 
-  const renderFormField = (InputType, placeholder,  description = "", list=[]) => {
+  const renderFormField = (InputType, placeholder,  description = "", list=[], style) => {
     return <>
-      <InputType placeholder={placeholder} changeHandler={handleChange} style={styleForInput} list={list}/>
+      <InputType placeholder={placeholder} changeHandler={handleChange} style={{...styleForInput, ...style}} list={list}/>
       {description !== "" && <small id={`${toCamelCase(placeholder)}Helper`} class="form-text text-muted mt-0 mb-2">
         {description}
       </small>}
@@ -49,7 +57,13 @@ const ItemInsertPanel = ({categories, isFetching}) => {
           maxFileSize={5242880}
         />
 
-        <button className="btn btn-success">Insert item</button>
+        <div className="d-flex justify-content-center align-items-center mb-3">
+        {renderFormField(Input, "Property","", [], {margin:"0 10px 0", maxWidth:120})}
+        {renderFormField(Input, "Value", "", [], {margin:0, maxWidth:250})}
+        </div>
+
+
+        <button className="btn btn-success btn-block" style={{maxWidth: 200, margin:"0 auto"}}>Insert item</button>
       </form>
     </Card>
   </div>
