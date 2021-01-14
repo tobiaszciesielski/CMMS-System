@@ -112,3 +112,11 @@ export const InputForm = styled.div`
     }
   `};
 `
+
+export const PropertyValueItem = styled.li`
+  display:flex;
+  background-color: #ffffff;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 3px 28px;
+`
