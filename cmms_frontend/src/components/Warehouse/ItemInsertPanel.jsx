@@ -84,7 +84,7 @@ const ItemInsertPanel = ({categories, isFetching}) => {
   const renderFormField = (InputType, required, placeholder,  description = "", list=[], style) => {
     return <>
       <InputType required={required} value={formData[toCamelCase(placeholder)]} placeholder={placeholder} changeHandler={handleChange} style={{...styleForInput, ...style}} list={list}/>
-      {description !== "" && <small id={`${toCamelCase(placeholder)}Helper`} class="form-text text-muted mt-0 mb-2">
+      {description !== "" && <small id={`${toCamelCase(placeholder)}Helper`} className="form-text text-muted mt-0 mb-2">
         {description}
       </small>}
     </>
@@ -97,12 +97,13 @@ const ItemInsertPanel = ({categories, isFetching}) => {
       <form className="text-center" action="submit" onSubmit={handleSubmit}>
         {renderFormField(Input, true, "Item Name")}
         {renderFormField(ListInput, true, "Producer", "", ['ABB', 'Simens'])}
+        {renderFormField(ListInput, false, "Producer Id")}
         {renderFormField(Input, true, "Serial Number")}
         {renderFormField(ListInput, true, "Category", "", ['Wires', 'Engines', 'Tools'])}
         {renderFormField(Input, true, "Quantity")}
-        {renderFormField(ListInput, true, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
-        {renderFormField(Input, true, "Destiny", "Where it will be used? Ex. L6")}
-        {renderFormField(Input, true, "Description", "Additional notes about product.")}
+        {renderFormField(ListInput, false, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
+        {renderFormField(Input, false, "Destiny", "Where it will be used? Ex. L6")}
+        {renderFormField(Input, false, "Description", "Additional notes about product.")}
         
         <ImageUploader
           style={{maxWidth: 400, margin: "20px auto"}}
@@ -116,8 +117,8 @@ const ItemInsertPanel = ({categories, isFetching}) => {
         />
 
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {renderFormField(Input, false, "Property","", [], {margin:"0 10px 0 0px", maxWidth:120})}
-          {renderFormField(Input, false, "Value", "", [], {margin:0, maxWidth:240})}
+          {renderFormField(Input, false, "Property","", [], {margin:"0 10px 0 0px", maxWidth:133})}
+          {renderFormField(Input, false, "Value", "", [], {margin:0, maxWidth:133})}
           {<button disabled={!validateProperty()} className="btn btn-primary ml-2" onClick={handleAddProperty}>Add property</button>}
         </div>
         <ul style={{margin:0, padding:0, display:"inline-block"}}>

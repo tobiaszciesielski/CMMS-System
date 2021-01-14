@@ -10,7 +10,12 @@ const findById = async (id) => {
   return await StoringLocations.findByPk(id)
 }
 
+const create = async (location) => {
+  await StoringLocations.create(location)
+}
+
 module.exports = {
   findAll,
-  findById
+  findById,
+  create,
 }

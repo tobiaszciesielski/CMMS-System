@@ -10,7 +10,12 @@ const findById = async (id) => {
   return await Producers.findByPk(id)
 }
 
+const create = async (producer) => {
+  await Producers.create(producer)
+}
+
 module.exports = {
   findAll,
-  findById
+  findById,
+  create,
 }

@@ -14,4 +14,10 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(result)
 })
 
+router.post("/", async (req, res) => {
+  console.log(req.body)
+  await ProducersDao.create(req.body)
+  res.status(200).send("Created producer ")
+})
+
 module.exports = router;

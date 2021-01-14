@@ -14,4 +14,9 @@ router.get("/:id", async (req, res) => {
   res.status(200).send(result)
 })
 
+router.post("/", async (req, res) => {
+  await LocationsDao.create(req.body)
+  res.status(200).send("Created")
+})
+
 module.exports = router;
