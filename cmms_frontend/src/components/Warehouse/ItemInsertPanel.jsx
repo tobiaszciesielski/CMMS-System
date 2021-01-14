@@ -47,8 +47,8 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     event.preventDefault()
     let {property, value, ...form} = formData
     form.properties = propertiesValuesList
-    form.image = 
-    console.log(form)
+    form.image = image
+    console.log(JSON.stringify(form))
   }
 
   const handleAddProperty = (event) => {
