@@ -17,16 +17,14 @@ import { toCamelCase } from '../../utils/helpers';
 const ItemInsertPanel = ({categories, isFetching}) => {
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
 
-  const [propertiesValuesList, setPropertiesValuesList] = useState([
-  {property:"kolor", value:"czerwony",},
-  {property:"moc", value:"200W",}
-  ])
+  const [propertiesValuesList, setPropertiesValuesList] = useState([])
   const [image, setImage] = useState(null)
   const [formData, setFormData] = useState({
     itemName:"",
     producer:"",
     serialNumber: "",
     category: "",
+    quantity: "",
     storingLocation: "",
     destiny: "",
     description: "",
@@ -47,6 +45,10 @@ const ItemInsertPanel = ({categories, isFetching}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    let {property, value, ...form} = formData
+    form.properties = propertiesValuesList
+    form.image = 
+    console.log(form)
   }
 
   const handleAddProperty = (event) => {
@@ -79,9 +81,9 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     setImage(picture)
   }
 
-  const renderFormField = (InputType, placeholder,  description = "", list=[], style) => {
+  const renderFormField = (InputType, required, placeholder,  description = "", list=[], style) => {
     return <>
-      <InputType value={formData[toCamelCase(placeholder)]} placeholder={placeholder} changeHandler={handleChange} style={{...styleForInput, ...style}} list={list}/>
+      <InputType required={required} value={formData[toCamelCase(placeholder)]} placeholder={placeholder} changeHandler={handleChange} style={{...styleForInput, ...style}} list={list}/>
       {description !== "" && <small id={`${toCamelCase(placeholder)}Helper`} class="form-text text-muted mt-0 mb-2">
         {description}
       </small>}
@@ -93,13 +95,14 @@ const ItemInsertPanel = ({categories, isFetching}) => {
       <ExitButton />
       <h2 className="mb-4">New Item</h2>
       <form className="text-center" action="submit" onSubmit={handleSubmit}>
-        {renderFormField(Input, "Item Name")}
-        {renderFormField(ListInput, "Producer", "", ['ABB', 'Simens'])}
-        {renderFormField(Input, "Serial Number")}
-        {renderFormField(ListInput, "Category", "", ['Wires', 'Engines', 'Tools'])}
-        {renderFormField(ListInput, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
-        {renderFormField(Input, "Destiny", "Where it will be used? Ex. L6")}
-        {renderFormField(Input, "Description", "Additional notes about product.")}
+        {renderFormField(Input, true, "Item Name")}
+        {renderFormField(ListInput, true, "Producer", "", ['ABB', 'Simens'])}
+        {renderFormField(Input, true, "Serial Number")}
+        {renderFormField(ListInput, true, "Category", "", ['Wires', 'Engines', 'Tools'])}
+        {renderFormField(Input, true, "Quantity")}
+        {renderFormField(ListInput, true, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
+        {renderFormField(Input, true, "Destiny", "Where it will be used? Ex. L6")}
+        {renderFormField(Input, true, "Description", "Additional notes about product.")}
         
         <ImageUploader
           style={{maxWidth: 400, margin: "20px auto"}}
@@ -113,18 +116,17 @@ const ItemInsertPanel = ({categories, isFetching}) => {
         />
 
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {renderFormField(Input, "Property","", [], {margin:"0 10px 0 0px", maxWidth:120})}
-          {renderFormField(Input, "Value", "", [], {margin:0, maxWidth:240})}
+          {renderFormField(Input, false, "Property","", [], {margin:"0 10px 0 0px", maxWidth:120})}
+          {renderFormField(Input, false, "Value", "", [], {margin:0, maxWidth:240})}
           {<button disabled={!validateProperty()} className="btn btn-primary ml-2" onClick={handleAddProperty}>Add property</button>}
         </div>
         <ul style={{margin:0, padding:0, display:"inline-block"}}>
           {propertiesValuesList.map(({property, value}) => <PropertyValueItem key={property+value}>
-            <FontAwesomeIcon onClick={() => handleDelete(property)} icon={faMinusCircle} style={{color:"#ff4040", margin:"5px 18px 0 0", cursor:"pointer", fontSize:"17px"}}/>
-            <h5 style={{ color: "#007bff", marginRight:12}}>{property}:</h5>
-            <h5 style={{color:"#4b4b4b"}}>{value}</h5>
+            <FontAwesomeIcon onClick={() => handleDelete(property)} icon={faMinusCircle} style={{color:"#ff4040", margin:"5px 18px 0 0",  cursor:"pointer", fontSize:"17px"}}/>
+            <h5 style={{color: "#007bff", margin:"0 15px 0 0"}}>{property}:</h5>
+            <h5 style={{color:"#4b4b4b", margin:0}}>{value}</h5>
           </PropertyValueItem> )}
         </ul>
-
 
         <button className="btn btn-success btn-block" style={{maxWidth: 200, margin:"0 auto"}}>Insert item</button>
       </form>

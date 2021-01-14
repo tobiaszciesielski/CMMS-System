@@ -118,5 +118,6 @@ export const PropertyValueItem = styled.li`
   background-color: #ffffff;
   border-radius: 5px;
   margin-bottom: 15px;
-  padding: 3px 28px;
+  padding: 7px 28px;
+  border: 1px #afafaf solid
 `
