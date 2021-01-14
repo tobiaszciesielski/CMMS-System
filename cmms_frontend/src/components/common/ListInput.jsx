@@ -1,13 +1,9 @@
 import React from 'react';
 import Input from './Input';
-import { useState } from 'react';
 import {toCamelCase} from '../../utils/helpers'
 
 const ListInput = ({placeholder, list, ...rest}) => {
-
-   
-  const [name, setName] = useState(toCamelCase(placeholder))
-  
+  const name = toCamelCase(placeholder)  
   return <>
     <Input
       name={name} 

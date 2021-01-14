@@ -5,7 +5,7 @@ import Categories from "./Categories";
 // icons
 import "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTools, faPlus, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faTools, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { useRouteMatch, useHistory } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
