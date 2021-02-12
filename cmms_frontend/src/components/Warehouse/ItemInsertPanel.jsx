@@ -13,15 +13,17 @@ import ListInput from "../common/ListInput";
 import Input from '../common/Input';
 
 import { toCamelCase } from '../../utils/helpers';
+import { post } from "../../services/httpService"
 
 const ItemInsertPanel = ({categories, isFetching}) => {
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
-
+  const reader = new FileReader()
   const [propertiesValuesList, setPropertiesValuesList] = useState([])
   const [image, setImage] = useState(null)
   const [formData, setFormData] = useState({
     itemName:"",
     producer:"",
+    producerId:"",
     serialNumber: "",
     category: "",
     quantity: "",
@@ -48,7 +50,9 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     let {property, value, ...form} = formData
     form.properties = propertiesValuesList
     form.image = image
-    console.log(JSON.stringify(form))
+    const json_form = JSON.stringify(form)
+    console.log(json_form)
+    post("/items/add", json_form)
   }
 
   const handleAddProperty = (event) => {
@@ -77,8 +81,10 @@ const ItemInsertPanel = ({categories, isFetching}) => {
   }
   
   const onImgDrop = (picture) => {
-    console.log(picture)
-    setImage(picture)
+    reader.readAsDataURL(picture[0]);
+    reader.onload = () => {
+      setImage(reader.result)
+    }
   }
 
   const renderFormField = (InputType, required, placeholder,  description = "", list=[], style) => {

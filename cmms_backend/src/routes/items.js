@@ -16,6 +16,7 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
+  console.log(req.body)
   await ItemsDao.create(req.body)
   res.status(200).send("Created")
 })
