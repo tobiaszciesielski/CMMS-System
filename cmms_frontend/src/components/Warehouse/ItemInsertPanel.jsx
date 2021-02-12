@@ -52,7 +52,7 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     form.image = image
     const json_form = JSON.stringify(form)
     console.log(json_form)
-    post("/items/add", json_form)
+    post("/items/add", form)
   }
 
   const handleAddProperty = (event) => {
