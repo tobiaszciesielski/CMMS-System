@@ -45,14 +45,12 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     setFormData({...formDataTmp})
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     let {property, value, ...form} = formData
     form.properties = propertiesValuesList
     form.image = image
-    const json_form = JSON.stringify(form)
-    console.log(json_form)
-    post("/items/add", form)
+    await post("/items/add", form)
   }
 
   const handleAddProperty = (event) => {
@@ -87,6 +85,26 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     }
   }
 
+  const getSubSubCategories = () => {
+    let aviableSubSubCats = []
+    let catList = categories.categoryList
+    for (let i = 0; i < catList.length; i++) {
+      let category = catList[i]
+      for (let j = 0; j < category.children.length; j++) {
+      let subCategory = category.children[j]
+      for (let k = 0; k < subCategory.children.length; k++) {
+        let subSubCategory = subCategory.children[k]
+        if (subSubCategory) {
+          // Trzeba dodać przedrostki do tych subsub zeby uzytkownik wiedzial czego to dotyczy.
+          // Trzeba rowniez przechowac id zeby mozna bylo w bazie odrazu dodac z tym FK
+          aviableSubSubCats.push(subSubCategory.name)
+        }
+      }
+    }
+  }
+    return aviableSubSubCats
+  }
+
   const renderFormField = (InputType, required, placeholder,  description = "", list=[], style) => {
     return <>
       <InputType required={required} value={formData[toCamelCase(placeholder)]} placeholder={placeholder} changeHandler={handleChange} style={{...styleForInput, ...style}} list={list}/>
@@ -100,12 +118,12 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     <Card className="mt-4 mx-auto position-relative text-center">
       <ExitButton />
       <h2 className="mb-4">New Item</h2>
-      <form className="text-center" action="submit" onSubmit={handleSubmit}>
+      {!isFetching && <form className="text-center" action="submit" onSubmit={handleSubmit}>
         {renderFormField(Input, true, "Item Name")}
         {renderFormField(ListInput, true, "Producer", "", ['ABB', 'Simens'])}
         {renderFormField(ListInput, false, "Producer Id")}
         {renderFormField(Input, true, "Serial Number")}
-        {renderFormField(ListInput, true, "Category", "", ['Wires', 'Engines', 'Tools'])}
+        {renderFormField(ListInput, true, "Category", "", getSubSubCategories())}
         {renderFormField(Input, true, "Quantity")}
         {renderFormField(ListInput, false, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
         {renderFormField(Input, false, "Destiny", "Where it will be used? Ex. L6")}
@@ -136,7 +154,7 @@ const ItemInsertPanel = ({categories, isFetching}) => {
         </ul>
 
         <button className="btn btn-success btn-block" style={{maxWidth: 200, margin:"0 auto"}}>Insert item</button>
-      </form>
+      </form>}
     </Card>
   </div>
 }
