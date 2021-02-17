@@ -25,6 +25,7 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
   const [propertiesValuesList, setPropertiesValuesList] = useState([])
   const [image, setImage] = useState(null)
   const [isFetchingFormData, setIsFetchingFormData] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     itemName:"",
     producer:"",
@@ -46,7 +47,7 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
         setProducers(response.data)
         setIsFetchingFormData(false);
       } catch (err) {
-        
+        console.log(err)
       }
     }
     fetchData();
@@ -56,14 +57,29 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
     return (formData.property !== '' && formData.value !== '')
   }
 
+  const findSelectedProducer = name => {
+    const found = producers.filter(obj => obj.producerName === name)[0]
+    return found
+  }
+
   const handleChange = ({ target }) => {
     const { name, value } = target;
     let formDataTmp = { ...formData }
     formDataTmp[name] = value
+    if (name === 'producer') {
+      let producer = findSelectedProducer(value)
+      if (producer) {
+        if (producer.producerCode !== undefined)
+          formDataTmp['producerId'] = producer.producerCode 
+      } else {
+        formDataTmp['producerId'] = ''
+      } 
+    }
     setFormData({...formDataTmp})
   };
 
   const handleSubmit = async (event) => {
+    setIsSubmitting(true)
     event.preventDefault()
     let {property, value, category, ...form} = formData
     form.properties = propertiesValuesList
@@ -71,8 +87,10 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
     form.subSubCategoryId = subSubCatList.filter(
       obj => obj.name === formData.category
     )[0].id
-    
+
     await post("/items/add", form)
+    console.log('finished')
+    setIsSubmitting(false)
   }
 
   const handleAddProperty = (event) => {
@@ -181,7 +199,12 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
           </PropertyValueItem> )}
         </ul>
 
-        <button className="btn btn-success btn-block" style={{maxWidth: 200, margin:"0 auto"}}>Insert item</button>
+        <button className={`btn btn-success btn-block`+ (!isSubmitting? "": " disabled")} 
+          style={{maxWidth: 200, margin:"0 auto"}}>
+        {isSubmitting
+          ? "Submitting..."
+          : "Insert item"}
+        </button>
       </form>}
     </Card>
   </div>
