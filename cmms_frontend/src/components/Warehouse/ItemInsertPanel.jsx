@@ -16,6 +16,7 @@ import { toCamelCase } from '../../utils/helpers';
 import { post } from "../../services/httpService"
 
 const ItemInsertPanel = ({categories, isFetching}) => {
+  let subSubCatList = []
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
   const reader = new FileReader()
   const [propertiesValuesList, setPropertiesValuesList] = useState([])
@@ -47,9 +48,13 @@ const ItemInsertPanel = ({categories, isFetching}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    let {property, value, ...form} = formData
+    let {property, value, category, ...form} = formData
     form.properties = propertiesValuesList
     form.image = image
+    form.subSubCategoryId = subSubCatList.filter(
+      obj => obj.name === formData.category
+    )[0].id
+    
     await post("/items/add", form)
   }
 
@@ -95,14 +100,16 @@ const ItemInsertPanel = ({categories, isFetching}) => {
       for (let k = 0; k < subCategory.children.length; k++) {
         let subSubCategory = subCategory.children[k]
         if (subSubCategory) {
-          // Trzeba dodać przedrostki do tych subsub zeby uzytkownik wiedzial czego to dotyczy.
-          // Trzeba rowniez przechowac id zeby mozna bylo w bazie odrazu dodac z tym FK
-          aviableSubSubCats.push(subSubCategory.name)
+          aviableSubSubCats.push({
+            name: category.name+'>'+subCategory.name+'>'+subSubCategory.name,
+            id: subSubCategory.id
+          })
         }
       }
     }
   }
-    return aviableSubSubCats
+    subSubCatList = aviableSubSubCats
+    return aviableSubSubCats.map(i => i.name)
   }
 
   const renderFormField = (InputType, required, placeholder,  description = "", list=[], style) => {

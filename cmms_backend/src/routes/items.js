@@ -23,8 +23,8 @@ router.post("/add", async (req, res) => {
     form.image = img
     form.inStock = parseInt(quantity)
     
-    // TO CHANGE
-    form.subSubCategoryId = 6
+
+    // TO CHANGE 
     form.producerId = 1
     // TO CHANGE 
     
