@@ -20,7 +20,7 @@ const Warehouse = () => {
       try {
         const response = await get('/categories');
         const data = {
-          categoryList: response.data
+          categoryList: response.data,
         }
         setCategoryTree({...data})
         setIsFetching(false)

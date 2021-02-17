@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import ImageUploader from 'react-images-upload'
 
@@ -7,20 +7,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { Card, PropertyValueItem } from '../../styleComponents';
+import { CircularProgress } from '@material-ui/core';
 
 import ExitButton from './../common/ExitButton';
 import ListInput from "../common/ListInput";
 import Input from '../common/Input';
 
 import { toCamelCase } from '../../utils/helpers';
-import { post } from "../../services/httpService"
+import { get, post } from "../../services/httpService"
 
-const ItemInsertPanel = ({categories, isFetching}) => {
+const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
   let subSubCatList = []
+
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
   const reader = new FileReader()
+  const [producers, setProducers] = useState([])
   const [propertiesValuesList, setPropertiesValuesList] = useState([])
   const [image, setImage] = useState(null)
+  const [isFetchingFormData, setIsFetchingFormData] = useState(true)
   const [formData, setFormData] = useState({
     itemName:"",
     producer:"",
@@ -34,6 +38,19 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     property:"", 
     value:"",
   })
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await get('/producers');
+        setProducers(response.data)
+        setIsFetchingFormData(false);
+      } catch (err) {
+        
+      }
+    }
+    fetchData();
+  }, []);
 
   const validateProperty = () => {
     return (formData.property !== '' && formData.value !== '')
@@ -125,11 +142,15 @@ const ItemInsertPanel = ({categories, isFetching}) => {
     <Card className="mt-4 mx-auto position-relative text-center">
       <ExitButton />
       <h2 className="mb-4">New Item</h2>
-      {!isFetching && <form className="text-center" action="submit" onSubmit={handleSubmit}>
+      
+      {
+        (isFetchingCategories || isFetchingFormData) 
+        ? <div style={{textAlign: "center", padding: "10px 0 10px 0"}}><CircularProgress style={{color: "#dddddd"}} size={25}/></div>
+        : <form className="text-center" action="submit" onSubmit={handleSubmit}>
         {renderFormField(Input, true, "Item Name")}
-        {renderFormField(ListInput, true, "Producer", "", ['ABB', 'Simens'])}
-        {renderFormField(ListInput, false, "Producer Id")}
         {renderFormField(Input, true, "Serial Number")}
+        {renderFormField(ListInput, true, "Producer", "", producers.map(p => p.producerName))}
+        {renderFormField(ListInput, false, "Producer Id")}
         {renderFormField(ListInput, true, "Category", "", getSubSubCategories())}
         {renderFormField(Input, true, "Quantity")}
         {renderFormField(ListInput, false, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
