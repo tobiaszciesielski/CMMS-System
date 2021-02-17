@@ -22,6 +22,7 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
   const styleForInput = {maxWidth: 300, margin: "10px auto 0"}
   const reader = new FileReader()
   const [producers, setProducers] = useState([])
+  const [storingLocations, setStoringLocations] = useState([])
   const [propertiesValuesList, setPropertiesValuesList] = useState([])
   const [image, setImage] = useState(null)
   const [isFetchingFormData, setIsFetchingFormData] = useState(true)
@@ -43,9 +44,12 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await get('/producers');
-        setProducers(response.data)
+        const {data: producers} = await get('/producers');
+        const {data: storingLocations} = await get('/locations')
+        setProducers(producers)
+        setStoringLocations(storingLocations)
         setIsFetchingFormData(false);
+        console.log(storingLocations)
       } catch (err) {
         console.log(err)
       }
@@ -87,9 +91,10 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
     form.subSubCategoryId = subSubCatList.filter(
       obj => obj.name === formData.category
     )[0].id
-
-    await post("/items/add", form)
+    
+    console.log(JSON.stringify(form))
     console.log('finished')
+    await post("/items/add", form)
     setIsSubmitting(false)
   }
 
@@ -171,7 +176,7 @@ const ItemInsertPanel = ({categories, isFetching: isFetchingCategories}) => {
         {renderFormField(ListInput, false, "Producer Id")}
         {renderFormField(ListInput, true, "Category", "", getSubSubCategories())}
         {renderFormField(Input, true, "Quantity")}
-        {renderFormField(ListInput, false, "Storing Location", "Position ID in warehouse.", ['X-1', 'X-2', 'X-4'])}
+        {renderFormField(ListInput, false, "Storing Location", "Position ID in warehouse.", storingLocations.map(s => s.storingLocationName))}
         {renderFormField(Input, false, "Destiny", "Where it will be used? Ex. L6")}
         {renderFormField(Input, false, "Description", "Additional notes about product.")}
         

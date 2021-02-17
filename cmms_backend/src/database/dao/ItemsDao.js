@@ -1,18 +1,22 @@
 const db = require('../db')
 
-const {Items} = db.models
+const {
+  Items,
+  Categories, 
+  SubCategories, 
+  SubSubCategories,
+  StoringLocations,
+  Producers
+} = db.models
+
 
 const findAll = async () => {
-  return await Items.findAll()
+  return await Items.findAll({include:[Producers, SubSubCategories, StoringLocations]})
 }
 
 const findById = async (id) => {
   return await Items.findByPk(id)
 }
-
-// ! TODO
-// UnhandledPromiseRejectionWarning: SequelizeValidationError: notNull Violation: Items.subSubCategoryId cannot be null,
-// notNull Violation: Items.inStock cannot be null
 
 const create = async (item) => {
   console.log(item)
