@@ -14,14 +14,30 @@ const findAllPropertiesValues = async () => {
   return await PropertiesValues.findAll()
 }
 
-const findOrCreate = async (producer) => {
-  const result = await Producers.findOrCreate({where: producer})
-  return result[0].dataValues
+const createPropertiesAndValues = async (propertiesValues) => {
+  let values = await Promise.all(propertiesValues.map((pv) => {
+    const {value} = pv
+    return Values.findOrCreate({where: {"valueName": value}})
+  }))
+
+  let properties = await Promise.all(propertiesValues.map((pv) => {
+    const {property} = pv
+    return Properties.findOrCreate({where: {"propertyName": property}})
+  }))
+  
+  return [
+    properties.map(p => {
+      return p[0].dataValues.propertyId
+    }),
+    values.map(v => {
+      return v[0].dataValues.valueId
+    })
+  ]
 }
 
 module.exports = {
   findAllProperties,
   findAllValues,
   findAllPropertiesValues,
-  findOrCreate,
+  createPropertiesAndValues,
 }

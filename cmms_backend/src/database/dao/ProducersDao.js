@@ -15,7 +15,8 @@ const create = async (producer) => {
 }
 
 const findOrCreate = async (producer) => {
-  producer.producerId = await Producers.findOne({where: {"producerName": producer.producerName}})
+  const { producerId } = await Producers.findOne({where: {"producerName": producer.producerName}})
+  producer.producerId = producerId
   const result = await Producers.upsert(producer)
   return result[0].dataValues
 }

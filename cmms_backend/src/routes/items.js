@@ -2,13 +2,14 @@ const express = require('express')
 let router = require('./auth')
 router = express.Router()
 
+const db = require("../database/db")
+const { PropertiesValues } = db.models
+
 const ItemsDao = require("../database/dao/ItemsDao")
 const ProducersDao = require("../database/dao/ProducersDao")
 const LocationsDao = require("../database/dao/LocationsDao")
-const db = require('../database/db')
+const PropertiesValuesDao = require('../database/dao/PropertiesValuesDao')
 const { forEach } = require('lodash')
-
-const { PropertiesValues } = db.models
 
 router.get("/", async (req, res) => {
   const result = await ItemsDao.findAll()
@@ -22,31 +23,37 @@ router.get("/:id", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const {image, quantity, properties, ...form} = req.body
+    const {image, quantity, properties, storingLocation,...form} = req.body
     
     const img = image 
       ? new Buffer.from(imageDataUrl.split(",")[1], 'base64')
       : undefined
-
-    form.image = img
-    form.inStock = parseInt(quantity)
-    form.PropertiesValues = properties
     
-
-    
-    const { storingLocationId } = await LocationsDao.findOrCreate(form.storingLocation)
-    console.log("StoringLocation", storingLocationId)
+    const { storingLocationId } = await LocationsDao.findOrCreate(storingLocation)
 
     const { producerId } = await ProducersDao.findOrCreate(
       {"producerCode": form.producerId, "producerName": form.producer}
     )
-    console.log("Producer", producerId)
+  
+    const [propertyIdList, valueIdList] = await PropertiesValuesDao.createPropertiesAndValues(properties)
 
-    console.log("SubSubCategoryId", form.subSubCategoryId)
+
+    form.image = img
+    form.inStock = parseInt(quantity)
+    form.storingLocationId = storingLocationId
+    form.producerId = producerId
+    form.subSubCategoryId
     
-    forEach(properties, p => {
-      console.log(p)
-    })
+    const item = await ItemsDao.create(form)
+    console.log(item.itemId)
+
+    for (let i = 0; i < propertyIdList.length; i++) {
+      let a = {itemId: item.itemId, valueId: valueIdList[i], propertyId: propertyIdList[i]}
+      console.log(a)
+      // TODO: put here function to create PropertyValue for created item.
+    }
+    // PropertiesValues.create()
+    // .then(([user, city]) => UserCity.create({userId: user.id, cityId: city.id}))
 
     // {
     //   "itemName": "Silnik BLDC",
@@ -66,8 +73,6 @@ router.post("/add", async (req, res) => {
     //   "image": null,
     //   "subSubCategoryId": 6
     // }
-
-    // ([item_name],[serial_number],[sub_sub_category_id],[producer_id],[in_stock],[destiny],[description])
 
     console.log(JSON.stringify(form))
     // const item = await ItemsDao.create(form)

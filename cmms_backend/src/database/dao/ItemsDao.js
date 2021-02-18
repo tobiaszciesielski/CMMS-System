@@ -20,7 +20,7 @@ const findById = async (id) => {
 }
 
 const create = async (item) => {
-  await Items.create(item)
+  return await Items.create(item)
 }
 
 module.exports = {
