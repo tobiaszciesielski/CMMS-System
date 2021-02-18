@@ -27,33 +27,33 @@ router.post("/add", async (req, res) => {
     form.image = img
     form.inStock = parseInt(quantity)
     form.PropertiesValues = properties
-    const location = await LocationsDao.findOrCreate(form.storingLocation)
-    console.log(location)
+    
+    const storingLocation = await LocationsDao.findOrCreate(form.storingLocation)
+    console.log(storingLocation)
+
+    const producer = await ProducersDao.findOrCreate(
+      {"producerCode": form.producerId, "producerName": form.producer}
+    )
+    console.log(producer)
     
     // {
     //   "itemName": "Silnik BLDC",
-         // IF PRODUCER NOT EXISTS
-    //   "producer": "Apple",
-    //   "producerNumber": 1,
+    //   "producer": "Samsung",
+    //   "producerId": "u273yru98ifm9783947hf",
     //   "serialNumber": "11-2234-4512-24",
-    //   "storingLocation": "X-2",
+    //   "quantity": "2",
+    //   "storingLocation": "R-21/C-66",
     //   "destiny": "Do napedzania linii",
     //   "description": "Prosze uwazac na podlaczenie",
     //   "properties": [
     //     {
-    //       "property": "kolor",
+    //       "property": "asdwa",
     //       "value": "czerwony"
-    //     },
-    //     {
-    //       "property": "rozmiar",
-    //       "value": "duże"
     //     }
     //   ],
-    //   "subSubCategoryId": 4,
     //   "image": null,
-    //   "inStock": 1
+    //   "subSubCategoryId": 6
     // }
-
 
     // ([item_name],[serial_number],[sub_sub_category_id],[producer_id],[in_stock],[destiny],[description])
 

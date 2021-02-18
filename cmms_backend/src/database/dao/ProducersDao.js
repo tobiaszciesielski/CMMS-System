@@ -14,8 +14,14 @@ const create = async (producer) => {
   await Producers.create(producer)
 }
 
+const findOrCreate = async (producer) => {
+  const result = await Producers.findOrCreate({where: producer})
+  return result[0].dataValues
+}
+
 module.exports = {
   findAll,
   findById,
   create,
+  findOrCreate,
 }
