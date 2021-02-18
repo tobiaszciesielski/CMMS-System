@@ -6,12 +6,13 @@ const {
   SubCategories, 
   SubSubCategories,
   StoringLocations,
-  Producers
+  Producers,
+  PropertiesValues,
 } = db.models
 
 
 const findAll = async () => {
-  return await Items.findAll({include:[Producers, SubSubCategories, StoringLocations]})
+  return await Items.findAll({include:[Producers, SubSubCategories, StoringLocations, PropertiesValues]})
 }
 
 const findById = async (id) => {
@@ -19,7 +20,6 @@ const findById = async (id) => {
 }
 
 const create = async (item) => {
-  console.log(item)
   await Items.create(item)
 }
 
