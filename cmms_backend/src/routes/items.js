@@ -5,6 +5,10 @@ router = express.Router()
 const ItemsDao = require("../database/dao/ItemsDao")
 const ProducersDao = require("../database/dao/ProducersDao")
 const LocationsDao = require("../database/dao/LocationsDao")
+const db = require('../database/db')
+const { forEach } = require('lodash')
+
+const { PropertiesValues } = db.models
 
 router.get("/", async (req, res) => {
   const result = await ItemsDao.findAll()
@@ -28,14 +32,22 @@ router.post("/add", async (req, res) => {
     form.inStock = parseInt(quantity)
     form.PropertiesValues = properties
     
-    const storingLocation = await LocationsDao.findOrCreate(form.storingLocation)
-    console.log(storingLocation)
 
-    const producer = await ProducersDao.findOrCreate(
+    
+    const { storingLocationId } = await LocationsDao.findOrCreate(form.storingLocation)
+    console.log("StoringLocation", storingLocationId)
+
+    const { producerId } = await ProducersDao.findOrCreate(
       {"producerCode": form.producerId, "producerName": form.producer}
     )
-    console.log(producer)
+    console.log("Producer", producerId)
+
+    console.log("SubSubCategoryId", form.subSubCategoryId)
     
+    forEach(properties, p => {
+      console.log(p)
+    })
+
     // {
     //   "itemName": "Silnik BLDC",
     //   "producer": "Samsung",
@@ -69,30 +81,20 @@ router.post("/add", async (req, res) => {
 
 module.exports = router;
 
-  // {
-  //     "itemId": 8,
-  //     "itemName": "Silnik BLDC",
-  //     "serialNumber": "11-2234-4512-24",
-  //     "subSubCategoryId": 6,
-  //     "producerId": 1,
-  //     "inStock": 2,
-  //     "image": {
-  //         "type": "Buffer",
-  //         "data": null 
-  //       },
-  //     "destiny": "Do napedzania linii",
-  //     "description": "Prosze uwazac na podlaczenie                                                                                                                                                                                                                                   ",
-  //     "storingLocationId": null,
-  //     "Producer": {
-  //         "producerId": 1,
-  //         "producerName": "Samsung",
-  //         "producerCode": "u273yru98ifm9783947hf"
-  //     },
-  //     "SubSubCategory": {
-  //         "subSubCategoryId": 6,
-  //         "subSubCategoryName": "bldc",
-  //         "subCategoryId": 2
-  //     },
-  //    "StoringLocation": null,
-  //    "PropertiesValues": []
-  // }
+// {
+//     "itemId": 8,
+//     "itemName": "Silnik BLDC",
+//     "serialNumber": "11-2234-4512-24",
+//     "subSubCategoryId": 6,
+//     "producerId": 1,
+//     "inStock": 2,
+//     "image": {
+//         "type": "Buffer",
+//         "data": null 
+//       },
+//     "destiny": "Do napedzania linii",
+//     "description": "Prosze uwazac na podlaczenie                                                                                                                                                                                                                                   ",
+//     "storingLocationId": null,
+//     "producerId": 1,
+//     "PropertiesValues": []
+// }
