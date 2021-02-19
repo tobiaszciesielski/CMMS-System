@@ -8,11 +8,13 @@ const {
   StoringLocations,
   Producers,
   PropertiesValues,
+  Properties,
+  Values
 } = db.models
 
 
 const findAll = async () => {
-  return await Items.findAll({include:[Producers, SubSubCategories, StoringLocations, PropertiesValues]})
+  return await Items.findAll({include:[Producers, SubSubCategories, StoringLocations, {model: PropertiesValues, include: [Properties, Values]}]})
 }
 
 const findById = async (id) => {

@@ -35,9 +35,17 @@ const createPropertiesAndValues = async (propertiesValues) => {
   ]
 }
 
+const createPropertiesValues = async (itemId, valueIdList, propertyIdList) => {
+  for (let i = 0; i < propertyIdList.length; i++) {
+    let itemPropertiesWithValues = {itemId: itemId, valueId: valueIdList[i], propertyId: propertyIdList[i]}
+    await PropertiesValues.create(itemPropertiesWithValues)
+  }
+}
+
 module.exports = {
   findAllProperties,
   findAllValues,
   findAllPropertiesValues,
   createPropertiesAndValues,
+  createPropertiesValues,
 }
