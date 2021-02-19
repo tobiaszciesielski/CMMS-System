@@ -22,7 +22,7 @@ router.post("/add", async (req, res) => {
     const {image, quantity, properties, storingLocation,...form} = req.body
     
     const img = image 
-      ? new Buffer.from(imageDataUrl.split(",")[1], 'base64')
+      ? new Buffer.from(image.split(",")[1], 'base64')
       : undefined
     
     const { storingLocationId } = await LocationsDao.findOrCreate(storingLocation)

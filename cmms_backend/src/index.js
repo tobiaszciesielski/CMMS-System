@@ -31,26 +31,3 @@ app.use("/locations", locationsRouter)
 
 // items 
 app.use("/items", itemsRouter)
-
-// {
-//   "itemName": "Silnik BLDC",
-//   "producer": "Apple",
-//   "producerId": "hu278fu99f398iyr3477m",
-//   "serialNumber": "11-2234-4512-24",
-//   "quantity": "1",
-//   "storingLocation": "X-2",
-//   "destiny": "Do napedzania linii",
-//   "description": "Prosze uwazac na podlaczenie",
-//   "properties": [
-//     {
-//       "property": "kolor",
-//       "value": "czerwony"
-//     },
-//     {
-//       "property": "rozmiar",
-//       "value": "duże"
-//     }
-//   ],
-//   "image": null,
-//   "subSubCategoryId": 4
-// }

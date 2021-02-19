@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 import Sidebar from "./Sidebar";
+import ItemList from './ItemList';
 
-const Dashboard = ({isFetching, categories}) => {
+const Dashboard = ({isFetching, categories, items}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(isFetching);
 
@@ -41,52 +42,8 @@ const Dashboard = ({isFetching, categories}) => {
           <Sidebar isFetching={isFetching} categories={categories}/>
             <div className="col-md-9 col-xl-10">
             {isLoading 
-            ? <div className= "d-flex flex-column justify-content-center align-items-center h-100"><CircularProgress color="inherit"/></div>
-            : <React.Fragment>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-              <Card className="mt-4">
-                <h1>Warehouse Content</h1>
-                <ul>
-                  <li>Some</li>
-                  <li>Content</li>
-                </ul>
-              </Card>
-            </React.Fragment>
-            }
+              ? <div className= "d-flex flex-column justify-content-center align-items-center h-100"><CircularProgress color="inherit"/></div>
+              : <ItemList items={items}/>}
           </div>
         </div>
       </div>

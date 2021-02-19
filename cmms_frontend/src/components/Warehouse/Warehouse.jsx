@@ -11,6 +11,7 @@ import ItemInsertPanel from './ItemInsertPanel'
 const Warehouse = () => {
   let { path } = useRouteMatch();
   const [categoryTree, setCategoryTree] = useState({categoryList:[]});
+  const [items, setItems] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const [err, setErr] = useState("")
   
@@ -18,11 +19,15 @@ const Warehouse = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await get('/categories');
-        const data = {
-          categoryList: response.data,
+        const categories = await get('/categories');
+        const items = await get('/items')
+
+        const catList = {
+          categoryList: categories.data,
         }
-        setCategoryTree({...data})
+
+        setCategoryTree({...catList})
+        setItems(items.data)
         setIsFetching(false)
       } catch (err) {
         setErr(err)
@@ -68,6 +73,7 @@ const Warehouse = () => {
         render={() => <Dashboard 
           isFetching={isFetching} 
           categories={categoryTree}
+          items={items}
           />}
       />
       <Redirect from="*" to={`${path}`} />

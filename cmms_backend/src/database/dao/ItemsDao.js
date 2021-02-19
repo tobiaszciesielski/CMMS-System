@@ -2,8 +2,6 @@ const db = require('../db')
 
 const {
   Items,
-  Categories, 
-  SubCategories, 
   SubSubCategories,
   StoringLocations,
   Producers,
